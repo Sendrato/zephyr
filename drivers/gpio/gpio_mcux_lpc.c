@@ -28,7 +28,7 @@
 #define PIN_TO_INPUT_MUX_CONNECTION(port, pin) \
 	((PINTSEL_PMUX_ID << PMUX_SHIFT) + (32 * port) + (pin))
 
-#define NO_PINT_INT ((1 << sizeof(pint_pin_int_t)) - 1)
+#define NO_PINT_INT ((1 << (sizeof(pint_pin_int_t)*8)) - 1)
 
 struct gpio_mcux_lpc_config {
 	/* gpio_driver_config needs to be first */
@@ -72,6 +72,15 @@ static int gpio_mcux_lpc_configure(const struct device *dev, gpio_pin_t pin,
 		return -ENOTSUP;
 	}
 
+#if defined(CONFIG_SOC_K32W061) || defined(CONFIG_SOC_QN9090)
+    if(pin == 10 || pin == 11) {
+        if ((flags & GPIO_PULL_DOWN) != 0) {
+		    return -ENOTSUP;
+	    }
+    }
+#endif
+
+
 #ifdef IOPCTL
 	IOPCTL_Type *pinmux_base = config->pinmux_base;
 	uint32_t *pinconfig = (uint32_t *)&(pinmux_base->PIO[port][pin]);
@@ -93,14 +102,25 @@ static int gpio_mcux_lpc_configure(const struct device *dev, gpio_pin_t pin,
 		}
 #else
 		IOCON_Type *pinmux_base = config->pinmux_base;
-		uint32_t *pinconfig = (uint32_t *)&(pinmux_base->PIO[port][pin]);
+		volatile uint32_t *pinconfig = (uint32_t *)&(pinmux_base->PIO[port][pin]);
 
-		*pinconfig &= ~(IOCON_PIO_MODE_PULLUP|IOCON_PIO_MODE_PULLDOWN);
-		if ((flags & GPIO_PULL_UP) != 0) {
-			*pinconfig |= IOCON_PIO_MODE_PULLUP;
-		} else if ((flags & GPIO_PULL_DOWN) != 0) {
-			*pinconfig |= IOCON_PIO_MODE_PULLDOWN;
-		}
+#if defined(CONFIG_SOC_K32W061) || defined(CONFIG_SOC_QN9090)
+        if(pin == 10 || pin == 11)
+        {
+            if (flags & GPIO_PULL_UP) {
+                *pinconfig |= IOCON_PIO_I2C_PIN_MODE_PULLUP;
+            }
+        }
+        else
+#endif
+        {    
+            *pinconfig &= ~(IOCON_PIO_MODE_PULLUP|IOCON_PIO_MODE_PULLDOWN);
+            if ((flags & GPIO_PULL_UP) != 0) {
+                *pinconfig |= IOCON_PIO_MODE_PULLUP;
+            } else if ((flags & GPIO_PULL_DOWN) != 0) {
+                *pinconfig |= IOCON_PIO_MODE_PULLDOWN;
+            }
+        }
 #endif
 	}
 
@@ -227,13 +247,16 @@ static uint32_t attach_pin_to_isr(uint32_t port, uint32_t pin, uint32_t isr_no)
 	/* Connect trigger sources to PINT */
 	INPUTMUX_Init(INPUTMUX);
 
+#if !defined(CONFIG_SOC_FAMILY_K32)
 	/* Code asumes PIN_INT values are grouped [0..3] and [4..7].
 	 * This scenario is true in LPC54xxx/LPC55xxx.
 	 */
-	if (isr_no < PIN_INT4_IRQn) {
-		pint_idx = isr_no - PIN_INT0_IRQn;
-	} else {
+	if (isr_no >= PIN_INT4_IRQn) {
 		pint_idx = isr_no - PIN_INT4_IRQn + 4;
+	} else 
+#endif    
+    {
+		pint_idx = isr_no - PIN_INT0_IRQn;
 	}
 
 	INPUTMUX_AttachSignal(INPUTMUX, pint_idx,

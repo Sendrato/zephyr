@@ -1,0 +1,9 @@
+# LPCXpresso54114 board
+
+# Copyright (c) 2021, Vincent van der Locht
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_LPCXPRESSOK32W061
+	bool "NXP LPCXPRESSO-K32W061"
+    depends on SOC_SERIES_K32
+	select SOC_PART_NUMBER_K32W061HN

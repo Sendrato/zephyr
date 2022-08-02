@@ -1,0 +1,29 @@
+# K32xxx series configuration options
+
+# Copyright (c) 2021, Vincent van der Locht
+# SPDX-License-Identifier: Apache-2.0
+
+if SOC_SERIES_K32
+
+config SOC_SERIES
+	default "k32"
+
+config NUM_IRQS
+	# must be >= the highest interrupt number used
+	default 56
+
+if BLE
+
+config SRAM_BASE_ADDRESS
+    default 0x4000400
+
+config SRAM_SIZE
+    default 87
+
+endif 
+
+source "soc/arm/nxp_k32/k32/Kconfig.defconfig.k32*"
+source "soc/arm/nxp_k32/k32/Kconfig.defconfig.qn*"
+
+
+endif # SOC_SERIES_K32_K32W

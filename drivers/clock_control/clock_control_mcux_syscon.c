@@ -32,6 +32,36 @@ static int mcux_lpc_syscon_clock_control_get_subsys_rate(
 				    clock_control_subsys_t sub_system,
 				    uint32_t *rate)
 {
+#if defined(CONFIG_SOC_SERIES_K32)
+uint32_t clock_name = (uint32_t) sub_system;
+
+    /* settings are based on selection made in soc.c */
+
+	switch (clock_name) {
+	case MCUX_FLEXCOMM0_CLK:
+    case MCUX_FLEXCOMM1_CLK:
+        // USART
+		*rate = CLOCK_GetFreq(kCLOCK_Xtal32M); // 32000000UL;
+		break;
+	case MCUX_FLEXCOMM2_CLK:
+    case MCUX_FLEXCOMM3_CLK:
+    case MCUX_FLEXCOMM6_CLK:
+        // I2c
+		*rate = CLOCK_GetFreq(kCLOCK_Xtal32M); // 32000000UL;
+		break;      
+    case MCUX_FLEXCOMM4_CLK:
+    case MCUX_FLEXCOMM5_CLK:
+        // SPI
+		*rate = CLOCK_GetFreq(kCLOCK_Xtal32M); // 32000000UL;
+		break;       
+    case MCUX_HS_SPI_CLK:
+        *rate = CLOCK_GetSpifiClkFreq();
+        break;
+    }
+
+//  CLOCK_GetFRGClock <= fractional clock divider for both usarts
+
+#else
 #if defined(CONFIG_I2C_MCUX_FLEXCOMM) || \
 		defined(CONFIG_SPI_MCUX_FLEXCOMM) || \
 		defined(CONFIG_UART_MCUX_FLEXCOMM) || \
@@ -100,6 +130,7 @@ static int mcux_lpc_syscon_clock_control_get_subsys_rate(
 #endif
 	}
 #endif
+#endif /* CONFIG_SOC_SERIES_K32 */
 
 	return 0;
 }

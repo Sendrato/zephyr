@@ -1,0 +1,29 @@
+# LPCXpresso54114 board
+
+# Copyright (c) 2021, Vincent van der Locht
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_LPCXPRESSOK32W061
+
+config BOARD
+	default "lpcxpressok32w061" if BOARD_LPCXPRESSOK32W061
+
+if PINMUX_MCUX_LPC
+
+config PINMUX_MCUX_LPC_PORT0
+	default y
+
+endif # PINMUX_MCUX_LPC
+
+if GPIO_MCUX_LPC
+
+config GPIO_MCUX_LPC_PORT0
+	default y
+
+endif # GPIO_MCUX_LPC
+
+#config SPI_5
+#	default y
+#	depends on SPI
+
+endif # BOARD_LPCXPRESSOK32W061
