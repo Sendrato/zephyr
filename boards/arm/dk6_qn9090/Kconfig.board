@@ -1,0 +1,11 @@
+#
+# Copyright (c) 2021, Vincent van der Locht
+# Copyright (c) 2022, Hessel van der Molen, sendrato.com
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+config BOARD_DK6_QN9090
+	bool "NXP QN9090DK6"
+    depends on SOC_SERIES_K32
+    select SOC_PART_NUMBER_K32_QN9090THN

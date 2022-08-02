@@ -55,6 +55,13 @@ config BT_STM32_IPM
 	help
 	  TODO
 
+config BT_NXP_IPM
+	bool "NXP IPM HCI"
+	select EVENTS
+	select ENTROPY_GENERATOR
+	help
+	  This driver provides access and enables NXPs bluetooth controller
+
 config BT_USERCHAN
 	bool "HCI User Channel based driver"
 	depends on BOARD_NATIVE_POSIX
@@ -102,6 +109,14 @@ config BT_STM32_IPM_RX_STACK_SIZE
 	int "STM32 IPM stack size for RX thread"
 	depends on BT_STM32_IPM
 	default 512
+
+if BT_NXP_IPM
+
+config BT_NXP_IPM_INIT_PRIORITY
+	int "BT NXP IPM init priority"
+	default 75
+
+endif
 
 config BT_DRIVER_QUIRK_NO_AUTO_DLE
 	bool "Host auto-initiated Data Length Update quirk"

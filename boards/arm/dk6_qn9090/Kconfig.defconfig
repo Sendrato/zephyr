@@ -1,0 +1,9 @@
+#
+# Copyright (c) 2021, Vincent van der Locht
+# Copyright (c) 2022, Hessel van der Molen, sendrato.com
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+config BOARD
+	default "dk6_qn9090" if BOARD_DK6_QN9090
