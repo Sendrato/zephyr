@@ -39,6 +39,12 @@
 	MAX(FSL_FEATURE_PINT_NUMBER_OF_CONNECTED_OUTPUTS,                                          \
 	    FSL_FEATURE_SECPINT_NUMBER_OF_CONNECTED_OUTPUTS)
 
+/* rebase conflict: above is the accepted solution from the Zephyr Community,
+ * below is the solution created by us. As they differ substantially, we need to
+ * check which solution is better. The issue occurred by defining multiple
+ * GPIO-IRQ-callbacks for the qn9090. */
+//#define NO_PINT_INT ((1 << (sizeof(pint_pin_int_t)*8)) - 1)
+
 struct gpio_mcux_lpc_config {
 	/* gpio_driver_config needs to be first */
 	struct gpio_driver_config common;
@@ -81,6 +87,17 @@ static int gpio_mcux_lpc_configure(const struct device *dev, gpio_pin_t pin,
 		return -ENOTSUP;
 	}
 
+#if defined(CONFIG_SOC_QN9090)
+    /* PIO10 and PIO11 do not have an internal pullup or pulldown, hence cannot
+     * be configured as such [UM11141, sec 3.5.3] */
+    if (pin == 10 || pin == 11) {
+        if ((flags & GPIO_PULL_DOWN) != 0) {
+            return -ENOTSUP;
+        }
+    }
+#endif
+
+
 #ifdef IOPCTL
 	IOPCTL_Type *pinmux_base = config->pinmux_base;
 	uint32_t *pinconfig = (uint32_t *)&(pinmux_base->PIO[port][pin]);
@@ -102,14 +119,14 @@ static int gpio_mcux_lpc_configure(const struct device *dev, gpio_pin_t pin,
 		}
 #else
 		IOCON_Type *pinmux_base = config->pinmux_base;
-		uint32_t *pinconfig = (uint32_t *)&(pinmux_base->PIO[port][pin]);
+		volatile uint32_t *pinconfig = (uint32_t *)&(pinmux_base->PIO[port][pin]);
 
-		*pinconfig &= ~(IOCON_PIO_MODE_PULLUP|IOCON_PIO_MODE_PULLDOWN);
-		if ((flags & GPIO_PULL_UP) != 0) {
-			*pinconfig |= IOCON_PIO_MODE_PULLUP;
-		} else if ((flags & GPIO_PULL_DOWN) != 0) {
-			*pinconfig |= IOCON_PIO_MODE_PULLDOWN;
-		}
+        *pinconfig &= ~(IOCON_PIO_MODE_PULLUP|IOCON_PIO_MODE_PULLDOWN);
+        if ((flags & GPIO_PULL_UP) != 0) {
+            *pinconfig |= IOCON_PIO_MODE_PULLUP;
+        } else if ((flags & GPIO_PULL_DOWN) != 0) {
+            *pinconfig |= IOCON_PIO_MODE_PULLDOWN;
+        }
 #endif
 	}
 
@@ -236,13 +253,16 @@ static uint32_t attach_pin_to_isr(uint32_t port, uint32_t pin, uint32_t isr_no)
 	/* Connect trigger sources to PINT */
 	INPUTMUX_Init(INPUTMUX);
 
+#if !defined(CONFIG_SOC_FAMILY_K32)
 	/* Code asumes PIN_INT values are grouped [0..3] and [4..7].
 	 * This scenario is true in LPC54xxx/LPC55xxx.
 	 */
-	if (isr_no < PIN_INT4_IRQn) {
-		pint_idx = isr_no - PIN_INT0_IRQn;
-	} else {
+	if (isr_no >= PIN_INT4_IRQn) {
 		pint_idx = isr_no - PIN_INT4_IRQn + 4;
+	} else 
+#endif    
+    {
+		pint_idx = isr_no - PIN_INT0_IRQn;
 	}
 
 	INPUTMUX_AttachSignal(INPUTMUX, pint_idx,

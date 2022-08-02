@@ -2,7 +2,7 @@
 
 config SOC_FLASH_MCUX
 	bool "MCUX flash shim driver"
-	depends on (HAS_MCUX_FTFX || HAS_MCUX_IAP)
+	depends on (HAS_MCUX_FTFX || HAS_MCUX_IAP_K32 || HAS_MCUX_IAP)
 	select FLASH_HAS_PAGE_LAYOUT
 	select FLASH_HAS_DRIVER_ENABLED
 	select MPU_ALLOW_FLASH_WRITE if ARM_MPU
@@ -18,6 +18,7 @@ if SOC_FLASH_MCUX
 config CHECK_BEFORE_READING
 	bool "Verify area before reading it"
 	default y if SOC_SERIES_LPC55XXX
+    default n if SOC_SERIES_K32
 	help
 	  Do a margin check flash command before reading an area.
 	  This feature prevents erroneous/forbidden reading. Some ECC enabled
