@@ -4231,6 +4231,13 @@ done:
 	return true;
 }
 
+/* Handler: +KTCP_SRVREQ: <socket_id>,<subsession_id>,<client_ip>,<client_port> */
+static bool on_cmd_tcp_srv_conn_req(struct net_buf **buf, uint16_t len)
+{
+    // TODO create socket for each connected  client
+    return true;
+}
+
 /* Handler: +WDSI: ## */
 static bool on_cmd_device_service_ind(struct net_buf **buf, uint16_t len)
 {
@@ -4488,6 +4495,7 @@ static void hl7800_rx(void)
 		CMD_HANDLER("+KUDP_NOTIF: ", sock_notif),
 		CMD_HANDLER("+KTCP_DATA: ", sockdataind),
 		CMD_HANDLER("+KUDP_DATA: ", sockdataind),
+        CMD_HANDLER("+KTCP_SRVREQ: ", tcp_srv_conn_req),
 
 		/* FIRMWARE UPDATE RESPONSES */
 		CMD_HANDLER("+WDSI: ", device_service_ind),
@@ -5733,8 +5741,52 @@ static int offload_bind(struct net_context *context,
 
 static int offload_listen(struct net_context *context, int backlog)
 {
-	/* NOT IMPLEMENTED */
-	return -ENOTSUP;
+    int ret = 0;
+    struct hl7800_socket *sock;
+
+    if (!context) {
+        return -EINVAL;
+    }
+
+    sock = (struct hl7800_socket *)context->offload_context;
+    if (!sock) {
+        LOG_ERR("Can't locate socket for net_ctx:%p!", context);
+        return -EINVAL;
+    }
+
+    if (sock->socket_id < 1) {
+        LOG_ERR("Invalid socket_id(%d) for net_ctx:%p!",
+                sock->socket_id, context);
+        return -EINVAL;
+    }
+
+    hl7800_lock();
+
+    if (sock->type == SOCK_STREAM) {
+        wakeup_hl7800();
+
+        reconfigure_IP_connection();
+
+        /* Configure TCP server */
+        if (!sock->created) {
+            ret = configure_TCP_socket(sock, true);
+            if (ret < 0) {
+                goto done;
+            }
+        }
+
+        /* Initiate TCP server */
+        ret = initiate_TCP_socket(sock);
+        if (ret < 0) {
+            goto done;
+        }
+    }
+
+    done:
+    allow_sleep(true);
+    hl7800_unlock();
+
+    return ret;
 }
 
 static int offload_connect(struct net_context *context,
@@ -5831,8 +5883,7 @@ done:
 static int offload_accept(struct net_context *context, net_tcp_accept_cb_t cb,
 			  int32_t timeout, void *user_data)
 {
-	/* NOT IMPLEMENTED */
-	return -ENOTSUP;
+	return 0;
 }
 
 static int offload_sendto(struct net_pkt *pkt, const struct sockaddr *dst_addr,
