@@ -5518,40 +5518,51 @@ done:
 	return ret;
 }
 
-static int configure_TCP_socket(struct hl7800_socket *sock)
+static int configure_TCP_socket(struct hl7800_socket *sock, bool is_server)
 {
 	int ret;
 	char cmd_cfg[sizeof("AT+KTCPCFG=#,#,\"" IPV6_ADDR_FORMAT "\",#####,,,,#,,#")];
-	int dst_port = -1;
+	int port = -1;
 	int af;
 	bool restore_on_boot = false;
+    struct sockaddr *sock_dir = NULL;
 
 #ifdef CONFIG_MODEM_HL7800_LOW_POWER_MODE
 	restore_on_boot = true;
 #endif
 
-	if (sock->dst.sa_family == AF_INET6) {
+    if (is_server) {
+        sock_dir = &sock->src;
+    } else {
+        sock_dir = &sock->dst;
+    }
+
+	if (sock_dir->sa_family == AF_INET6) {
 		af = MDM_HL7800_SOCKET_AF_IPV6;
-		dst_port = net_sin6(&sock->dst)->sin6_port;
-	} else if (sock->dst.sa_family == AF_INET) {
+		port = net_sin6(sock_dir)->sin6_port;
+	} else if (sock_dir->sa_family == AF_INET) {
 		af = MDM_HL7800_SOCKET_AF_IPV4;
-		dst_port = net_sin(&sock->dst)->sin_port;
+		port = net_sin(sock_dir)->sin_port;
 	} else {
 		return -EINVAL;
 	}
 
 	sock->socket_id = MDM_CREATE_SOCKET_ID;
 
-	snprintk(cmd_cfg, sizeof(cmd_cfg), "AT+KTCPCFG=%d,%d,\"%s\",%u,,,,%d,,%d", 1, 0,
-		 hl7800_sprint_ip_addr(&sock->dst), dst_port, af, restore_on_boot);
+    if (is_server) {
+        snprintk(cmd_cfg, sizeof(cmd_cfg), "AT+KTCPCFG=%d,%d,,%u,,,,%d,,%d", 1,
+                 1, port, af, restore_on_boot);
+    } else {
+        snprintk(cmd_cfg, sizeof(cmd_cfg), "AT+KTCPCFG=%d,%d,\"%s\",%u,,,,%d,,%d", 1,
+                 0, hl7800_sprint_ip_addr(sock_dir), port, af, restore_on_boot);
+    }
+
 	ret = send_at_cmd(sock, cmd_cfg, MDM_CMD_SEND_TIMEOUT, 0, false);
 	if (ret < 0) {
 		LOG_ERR("AT+KTCPCFG ret:%d", ret);
 		ret = -EIO;
-		goto done;
 	}
 
-done:
 	return ret;
 }
 
@@ -5783,7 +5794,7 @@ static int offload_connect(struct net_context *context,
 
 		/* Configure/create TCP connection */
 		if (!sock->created) {
-			ret = configure_TCP_socket(sock);
+			ret = configure_TCP_socket(sock, false);
 			if (ret < 0) {
 				goto done;
 			}
