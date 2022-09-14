@@ -5486,18 +5486,24 @@ void mdm_hl7800_register_event_callback(mdm_hl7800_event_callback_t cb)
 
 /*** OFFLOAD FUNCTIONS ***/
 
-static int connect_TCP_socket(struct hl7800_socket *sock)
+static int initiate_TCP_socket(struct hl7800_socket *sock)
 {
-	int ret;
-	char cmd_con[sizeof("AT+KTCPCNX=##")];
+    int ret = 0;
+    char cmd_con[sizeof("AT+KTCPCNX=##")];
 
-	snprintk(cmd_con, sizeof(cmd_con), "AT+KTCPCNX=%d", sock->socket_id);
-	ret = send_at_cmd(sock, cmd_con, MDM_CMD_SEND_TIMEOUT, 0, false);
-	if (ret < 0) {
-		LOG_ERR("AT+KTCPCNX ret:%d", ret);
-		ret = -EIO;
-		goto done;
-	}
+    snprintk(cmd_con, sizeof(cmd_con), "AT+KTCPCNX=%d", sock->socket_id);
+    ret = send_at_cmd(sock, cmd_con, MDM_CMD_SEND_TIMEOUT, 0, false);
+    if (ret < 0) {
+        LOG_ERR("AT+KTCPCNX ret:%d", ret);
+        ret = -EIO;
+    }
+
+    return ret;
+}
+
+static int wait_until_TCP_connected(struct hl7800_socket *sock)
+{
+    int ret;
 	/* Now wait for +KTCP_IND or +KTCP_NOTIF to ensure
 	 * the connection succeeded or failed.
 	 */
@@ -5509,12 +5515,11 @@ static int connect_TCP_socket(struct hl7800_socket *sock)
 	}
 	if (ret < 0) {
 		LOG_ERR("+KTCP_IND/NOTIF ret:%d", ret);
-		goto done;
 	} else {
 		sock->state = SOCK_CONNECTED;
 		net_context_set_state(sock->context, NET_CONTEXT_CONNECTED);
 	}
-done:
+
 	return ret;
 }
 
@@ -5801,10 +5806,16 @@ static int offload_connect(struct net_context *context,
 		}
 
 		/* Connect to TCP */
-		ret = connect_TCP_socket(sock);
+		ret = initiate_TCP_socket(sock);
 		if (ret < 0) {
 			goto done;
 		}
+
+        /* Wait for the connection status update */
+        ret = wait_until_TCP_connected(sock);
+        if (ret < 0) {
+            goto done;
+        }
 	}
 
 done:
