@@ -4170,8 +4170,7 @@ static void sock_rx_data_cb_work(struct k_work *work)
 }
 
 /* Handler: +KTCP_DATA/+KUDP_DATA: <socket_id>,<left_bytes> */
-static bool on_cmd_sockdataind(struct net_buf **buf, uint16_t len)
-{
+static bool on_cmd_sockdataind(struct net_buf **buf, uint16_t len){
 	int socket_id, left_bytes, rc;
 	size_t out_len;
 	char *delim;
