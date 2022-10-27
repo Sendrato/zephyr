@@ -25,7 +25,8 @@
 		zephyr,console = &flexcomm0;
 		zephyr,shell-uart = &flexcomm0;
         zephyr,entropy = &rng;
-};
+        zephyr,code-partition = &slot0_partition;
+    };
 
 	leds {
 		compatible = "gpio-leds";
@@ -106,4 +107,33 @@
 
 &gpio0 {
 	status = "okay";
+};
+
+&flash0 {
+  partitions {
+    compatible = "fixed-partitions";
+    #address-cells = <1>;
+    #size-cells = <1>;
+
+    boot_partition: partition@0 {
+      label = "mcuboot";
+      reg = <0x00000000 0x0000a000>;
+    };
+    slot0_partition: partition@a000 {
+      label = "image-0";
+      reg = <0x0000a000 0x00044000>;
+    };
+    slot1_partition: partition@4E000 {
+      label = "image-1";
+      reg = <0x0004E000 0x00044000>;
+    };
+    scratch_partition: partition@92000 {
+      label = "image-scratch";
+      reg = <0x00092000 0x0000a000>;
+    };
+    storage_partition: partition@9C000 {
+      label = "storage";
+      reg = <0x0009C000 0x00004000>;
+    };
+  };
 };

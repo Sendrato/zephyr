@@ -291,6 +291,23 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
 
     stated_size = get_symbol_value(elf_file_name, 'm_app_size')
 
+    vector_offset = 0
+
+    # compile for Zephyr instead of MCUXpresso?
+    if stated_size == 0:
+        # Stated-size is limited to available flash
+        stated_size = get_symbol_value(elf_file_name, 'CONFIG_FLASH_SIZE') * 1024
+
+        # CONFIG_FLASH_LOAD_SIZE is set when MCUBOOT is enabled and the application
+        # should fit within a sub-range of the full flash.
+        flash_load_size = get_symbol_value(elf_file_name, 'CONFIG_FLASH_LOAD_SIZE')
+        if flash_load_size != 0:
+            stated_size = flash_load_size
+
+        image_addr = get_symbol_value(elf_file_name, '__rom_region_start')
+        vector_start_addr = get_symbol_value(elf_file_name, '_vector_start')
+        vector_offset = vector_start_addr - image_addr
+
     # In case of SOTA get the position in flash from the linker it should be the app_id
     if args.sota_number_of_blob is not None:
         if args.image_identifier is None:
@@ -311,6 +328,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
         print("image_iden=%d image_addr=0x%0*X" % (image_iden, 8, image_addr))
         print("stated_size=%d" % (stated_size))
         print("version=0x%0*X" % (8,args.version))
+        print("vector_offset=0x%0*X" % (8, vector_offset))
         print("boot_block_marker=0x%0*X" % (8, boot_block_marker))
 
     sections = parse_sections(elf_file_name)
@@ -350,7 +368,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
 
     header=""
     with open(args.out_file, 'r+b') as elf_file:
-        elf_file.seek(first_section.offset)
+        elf_file.seek(first_section.offset + vector_offset)
         vectors = elf_file.read(header_struct.size)
 
         fields = list(header_struct.unpack(vectors))
@@ -386,8 +404,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
         print("Writing checksum {:08x} to file {:s}".format(vectsum, args.out_file))
         print("Writing CRC32 of header {:08x} to file {:s}".format(fields[10], args.out_file))
 
-
-        elf_file.seek(first_section.offset)
+        elf_file.seek(first_section.offset + vector_offset)
         header = header_struct.pack(*fields)
         elf_file.write(header)
 
