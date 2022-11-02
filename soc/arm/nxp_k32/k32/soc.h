@@ -47,11 +47,15 @@
 #define IOCON_PIO_FUNC2 0x02u
 /*!@brief Selects pin function 5 */
 #define IOCON_PIO_FUNC5 0x05u
+/*!<@brief Selects pin function 6 */
+#define IOCON_PIO_FUNC6 0x06u
 /*!<@brief Selects pin function 7 */
 #define IOCON_PIO_FUNC7 0x07u
 
 /*!@brief Input filter disabled */
 #define IOCON_PIO_INPFILT_OFF 0x0100u
+/*!<@brief Input filter enabled */
+#define IOCON_PIO_INPFILT_ON 0x00u
 
 /*!@brief Input function is not inverted */
 #define IOCON_PIO_INV_DI 0x00u
@@ -73,6 +77,10 @@
 #define IOCON_PIO_SLEW0_STANDARD 0x00u
 /*!@brief Standard mode, output slew rate control is disabled */
 #define IOCON_PIO_SLEW1_STANDARD 0x00u
+
+#define IOCON_PIO_SLEW0_FAST 0x20u    /*!<@brief Fast mode, slew rate control is enabled */
+#define IOCON_PIO_SLEW1_FAST 0x0200u  /*!<@brief Fast mode, slew rate control is enabled */
+
 
 /*!@brief SSEL is disabled */
 #define IOCON_PIO_SSEL_DI 0x00u
