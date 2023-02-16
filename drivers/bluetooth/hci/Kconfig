@@ -116,7 +116,16 @@ config BT_NXP_IPM_INIT_PRIORITY
 	int "BT NXP IPM init priority"
 	default 75
 
-endif
+if SOC_FAMILY_K32
+
+config BT_NXP_FIXED_MAC_ADDR
+    hex "Fixed BT-MAC address of k32 soc"
+    default 0
+    help
+        "6-byte hexadecimal address, eg: 0xffaa01610401. Value is split in a  a hex-array by k32 driver-system."
+
+endif # SOC_FAMILY_K32
+endif # BT_NXP_IPM
 
 config BT_DRIVER_QUIRK_NO_AUTO_DLE
 	bool "Host auto-initiated Data Length Update quirk"
