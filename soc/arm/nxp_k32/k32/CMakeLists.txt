@@ -8,6 +8,7 @@
 zephyr_library()
 
 zephyr_library_sources(soc.c)
+zephyr_library_sources(power.c)
 
 zephyr_library_include_directories(
   ${ZEPHYR_BASE}/kernel/include

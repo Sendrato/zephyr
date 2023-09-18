@@ -8,5 +8,6 @@
 
 void main(void)
 {
+    k_sleep(K_SECONDS(4));
 	printk("Hello World! %s\n", CONFIG_BOARD);
 }

@@ -771,6 +771,7 @@ add_dependencies(zephyr_generated_headers
 set(OFFSETS_LIB offsets)
 
 set(OFFSETS_C_PATH ${ARCH_DIR}/${ARCH}/core/offsets/offsets.c)
+
 set(OFFSETS_H_PATH ${PROJECT_BINARY_DIR}/include/generated/offsets.h)
 
 add_library(          ${OFFSETS_LIB} OBJECT ${OFFSETS_C_PATH})
