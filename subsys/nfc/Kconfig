@@ -1,0 +1,25 @@
+#
+# Copyright (c) 2018 Nordic Semiconductor
+# Copyright (c) 2021 Sendrato BV
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menu "NFC"
+
+config NFC
+  bool "NFC subsystem"
+  default n
+  help
+    This option enables the NFC subsystem.
+
+if NFC
+
+rsource "ndef/Kconfig"
+rsource "t2t/Kconfig"
+rsource "t4t/Kconfig"
+rsource "tnep/Kconfig"
+
+endif # NFC
+
+endmenu
