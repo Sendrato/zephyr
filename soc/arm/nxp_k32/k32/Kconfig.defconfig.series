@@ -1,0 +1,20 @@
+# NXP K32 series
+#
+# Copyright (c) 2021, Vincent van der Locht
+# Copyright (c) 2022, Hessel van der Molen, sendrato.com
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if SOC_SERIES_K32
+
+config SOC_SERIES
+	default "k32"
+
+config NUM_IRQS
+	# must be >= the highest interrupt number used
+	default 56
+
+source "soc/arm/nxp_k32/k32/Kconfig.defconfig.qn*"
+
+endif # SOC_SERIES_K32
