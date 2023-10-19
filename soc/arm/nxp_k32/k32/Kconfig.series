@@ -1,0 +1,19 @@
+# NXP K32 series
+#
+# Copyright (c) 2021, Vincent van der Locht
+# Copyright (c) 2022, Hessel van der Molen, sendrato.com
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+config SOC_SERIES_K32
+	bool "NXP K32 Series MCU"
+	select ARM
+	select HAS_MCUX
+	select HAS_MCUX_RNG
+	select HAS_MCUX_FLEXCOMM
+	select HAS_MCUX_SYSCON
+	select SOC_FAMILY_K32
+	select CPU_CORTEX_M_HAS_SYSTICK
+	help
+	  Enable support for NXP K32 MCU series

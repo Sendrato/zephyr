@@ -12,3 +12,8 @@ zephyr_library_sources_ifdef(CONFIG_BT_USERCHAN    userchan.c)
 zephyr_library_sources_ifdef(CONFIG_BT_SILABS_HCI  slz_hci.c)
 zephyr_library_sources_ifdef(CONFIG_BT_PSOC6_BLESS hci_psoc6_bless.c)
 zephyr_library_sources_ifdef(CONFIG_SOC_NRF5340_CPUAPP nrf53_support.c)
+zephyr_library_sources_ifdef(CONFIG_BT_NXP_IPM     ipm_nxp.c)
+
+if ((CONFIG_CODE_DATA_RELOCATION) AND ("${MCUX_DEVICE}" STREQUAL "QN9090"))
+    zephyr_code_relocate(ipm_nxp.c SRAM1_BSS)
+endif()

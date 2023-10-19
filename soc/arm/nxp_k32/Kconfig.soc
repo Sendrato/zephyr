@@ -1,0 +1,9 @@
+# NXP K32 family
+#
+# Copyright (c) 2021, Vincent van der Locht
+# Copyright (c) 2022, Hessel van der Molen, sendrato.com
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+source "soc/arm/nxp_k32/*/Kconfig.series"

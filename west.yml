@@ -23,6 +23,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: babblesim
       url-base: https://github.com/BabbleSim
+    - name: sendrato
+      url-base: https://github.com/Sendrato
 
   group-filter: [-babblesim, -optional]
 
@@ -196,7 +198,8 @@ manifest:
       groups:
         - hal
     - name: hal_nxp
-      revision: ad142f5612d927e29b1f9606e8edade871b8a526
+      remote: sendrato
+      revision: master-20220510-qn9090-v2.6.5-zephyr3.4
       path: modules/hal/nxp
       groups:
         - hal

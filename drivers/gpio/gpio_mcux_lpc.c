@@ -33,6 +33,12 @@
 #define INT_SOURCE_INTB 2
 #define INT_SOURCE_NONE 3
 
+/* rebase conflict: above is the accepted solution from the Zephyr Community,
+ * below is the solution created by us. As they differ substantially, we need to
+ * check which solution is better. The issue occurred by defining multiple
+ * GPIO-IRQ-callbacks for the qn9090. */
+//#define NO_PINT_INT ((1 << (sizeof(pint_pin_int_t)*8)) - 1)
+
 struct gpio_mcux_lpc_config {
 	/* gpio_driver_config needs to be first */
 	struct gpio_driver_config common;
@@ -64,6 +70,16 @@ static int gpio_mcux_lpc_configure(const struct device *dev, gpio_pin_t pin,
 	if (((flags & GPIO_INPUT) != 0) && ((flags & GPIO_OUTPUT) != 0)) {
 		return -ENOTSUP;
 	}
+
+#if defined(CONFIG_SOC_QN9090)
+	/* PIO10 and PIO11 do not have an internal pullup or pulldown, hence cannot
+         * be configured as such [UM11141, sec 3.5.3] */
+	if (pin == 10 || pin == 11) {
+		if ((flags & GPIO_PULL_DOWN) != 0) {
+			return -ENOTSUP;
+		}
+	}
+#endif
 
 #ifdef IOPCTL /* RT600 and RT500 series */
 	IOPCTL_Type *pinmux_base = config->pinmux_base;
@@ -437,9 +453,9 @@ static const clock_ip_name_t gpio_clock_names[] = GPIO_CLOCKS;
 											\
 	static int lpc_gpio_init_##n(const struct device *dev)				\
 	{										\
-		gpio_mcux_lpc_init(dev);						\
-		GPIO_MCUX_LPC_MODULE_IRQ(n);						\
-											\
+		gpio_mcux_lpc_init(dev);      \
+        IF_ENABLED(FSL_FEATURE_GPIO_HAS_INTERRUPT,          \
+            (GPIO_MCUX_LPC_MODULE_IRQ(n)));    \
 		return 0;								\
 	}
 
