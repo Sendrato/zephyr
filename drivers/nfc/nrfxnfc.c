@@ -279,5 +279,5 @@ static int _nrfxnfc_init(const struct device *dev)
 DEVICE_DEFINE(nrfxnfc, _nrfxnfc_driver_name, _nrfxnfc_init,
         NULL,
         &_nrfxnfc_driver_data, NULL,
-        APPLICATION, CONFIG_NRFXNFC_INIT_PRIORITY,
+        POST_KERNEL, CONFIG_NRFXNFC_INIT_PRIORITY,
         &_nrfxnfc_driver_api);
