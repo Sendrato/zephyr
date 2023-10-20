@@ -15,4 +15,5 @@ set_property(GLOBAL APPEND PROPERTY extra_post_build_commands
         COMMAND ${PYTHON_EXECUTABLE}
         ${CMAKE_CURRENT_LIST_DIR}/dk6_image_tool.py -b1
         ${CMAKE_BINARY_DIR}/zephyr/${KERNEL_ELF_NAME}
+        -gnu ${CROSS_COMPILE}
 )

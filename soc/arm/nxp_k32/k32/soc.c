@@ -20,7 +20,7 @@
 #include <zephyr/drivers/uart.h>
 #include <zephyr/linker/sections.h>
 #include <zephyr/arch/cpu.h>
-#include <aarch32/cortex_m/exc.h>
+#include <cortex_m/exc.h>
 #include <fsl_power.h>
 #include <fsl_clock.h>
 #include <fsl_common.h>
@@ -41,36 +41,6 @@
  *
  */
 #define CPU_FREQ DT_PROP(DT_PATH(cpus, cpu_0), clock_frequency)
-
-void z_arm_platform_init(void)
-{
- 
-    // Disable interrupts
-    __asm volatile ("cpsid i");
-
-
-     // Enable SRAM clock used by Stack
-    __asm volatile ("LDR R0, =0x40000220\n\t"
-                    "MOV R1, #56\n\t"
-                    "STR R1, [R0]");
-
-    __asm volatile(
-        ".set   cpu_ctrl,       0x40000800\t\n"
-        ".set   coproc_boot,    0x40000804\t\n"
-        ".set   coproc_stack,   0x40000808\t\n"
-        "LDR    R0,=coproc_boot\t\n"          // load co-processor boot address (from CPBOOT)
-        "LDR    R0,[R0]\t\n"                  // get address to branch to
-        "MOVS   R0,R0\t\n"                    // Check if 0
-        "BEQ.N  masterboot\t\n"               // if zero in boot reg, we just branch to  real reset
-        "LDR    R1,=coproc_stack\t\n"         // load co-processor stack pointer (from CPSTACK)
-        "LDR    R1,[R1]\t\n"
-        "MOV    SP,R1\t\n"
-        "BX     R0\t\n"                       // branch to boot address
-        "masterboot:\t\n");
-
-    // Reenable interrupts
-    __asm volatile ("cpsie i");
-}
 
 static ALWAYS_INLINE void clock_init(void)
 {
@@ -203,12 +173,6 @@ static int nxp_k32_init(void)
 	/* Turn on PINT device*/
 	PINT_Init(PINT);
 #endif
-
-	/*
-	 * install default handler that simply resets the CPU if configured in
-	 * the kernel, NOP otherwise
-	 */
-	NMI_INIT();
 
 #if defined(CONFIG_BT)
     vRadio_SkipXTALInit();

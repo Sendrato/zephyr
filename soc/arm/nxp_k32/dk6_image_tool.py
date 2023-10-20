@@ -19,7 +19,7 @@ def auto_int(x):
 def get_symbol_value(file, symb_name):
     val = 0
 
-    objdump = subprocess.check_output(['arm-none-eabi-objdump', '--syms', file])
+    objdump = subprocess.check_output([args.gnu + 'objdump', '--syms', file])
     objdump = objdump.decode('utf-8')
 
     symb_re = re.compile(r'^([0-9a-f]{8})[\s\S]+[\s]+([0-9a-f]{8})\s([\w\.]+)')
@@ -38,7 +38,7 @@ def parse_sections(file):
 
     Section = namedtuple('Section', ['idx', 'name', 'size', 'vma', 'lma', 'offset', 'align', 'flags'])
 
-    objdump = subprocess.check_output(['arm-none-eabi-objdump', '-h', file])
+    objdump = subprocess.check_output([args.gnu + 'objdump', '-h', file])
     objdump = objdump.decode('utf-8')
 
     section_re = re.compile(r'(?P<idx>[0-9]+)\s'
@@ -130,7 +130,7 @@ def BuildImageElfDeprecated(args, elf_file_name, bin_file_name, verbose):
     else:
         image_size = last_section.lma + last_section.size
 
-    dump_section = subprocess.check_output(['arm-none-eabi-objcopy', '--dump-section', '%s=data.bin' % last_section.name, args.in_file])
+    dump_section = subprocess.check_output([args.gnu + 'objcopy', '--dump-section', '%s=data.bin' % last_section.name, args.in_file])
 
     if args.appcore_image is True:
         boot_block = boot_block_struct.pack(BOOT_BLOCK_MARKER, 1, args.target_appcore_addr, image_size + boot_block_struct.size, 0, 0, 0)
@@ -140,7 +140,7 @@ def BuildImageElfDeprecated(args, elf_file_name, bin_file_name, verbose):
     with open('data.bin', 'ab') as out_file:
         out_file.write(boot_block)
 
-    update_section = subprocess.check_output(['arm-none-eabi-objcopy', '--update-section', '%s=data.bin' % last_section.name, args.in_file, args.out_file])
+    update_section = subprocess.check_output([args.gnu + 'objcopy', '--update-section', '%s=data.bin' % last_section.name, args.in_file, args.out_file])
 
     first_section = None
 
@@ -246,7 +246,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
         print("!!! Error the blob ID is missing")
         error = 1
 
-    bin_output = subprocess.check_output(['arm-none-eabi-objcopy', '-O', 'binary', elf_file_name, bin_file_name])
+    bin_output = subprocess.check_output([args.gnu + 'objcopy', '-O', 'binary', elf_file_name, bin_file_name])
 
     with open(bin_file_name, 'rb') as in_file:
         input_file = in_file.read()
@@ -408,7 +408,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
         header = header_struct.pack(*fields)
         elf_file.write(header)
 
-    dump_section = subprocess.check_output(['arm-none-eabi-objcopy',
+    dump_section = subprocess.check_output([args.gnu + 'objcopy',
                                             '--dump-section',
                                             '%s=data.bin' % last_section_name,
                                             args.out_file])
@@ -487,7 +487,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
     if verbose:
         print("Updating last section " + last_section.name)
 
-    update_section = subprocess.check_output(['arm-none-eabi-objcopy',
+    update_section = subprocess.check_output([args.gnu + 'objcopy',
                                               '--update-section',
                                               '%s=data.bin' % last_section_name,
                                               elf_file_name,
@@ -497,7 +497,7 @@ def BuildImageElf(args, elf_bin_file, bin_file_name, verbose):
     if (is_signature == True):
         file_out.close()
 
-    bin_output = subprocess.check_output(['arm-none-eabi-objcopy',
+    bin_output = subprocess.check_output([args.gnu + 'objcopy',
                                           '-O',
                                           'binary',
                                           elf_file_name,
@@ -534,7 +534,7 @@ parser.add_argument('-b', '--verbose', type=int, default=0, help="verbosity leve
 parser.add_argument('-cl', '--compatibility_list', help="Compatibility list")
 parser.add_argument('-sota', '--sota_number_of_blob', type=int, help="This parameter is used to generate the image directory command to be provisioned")
 parser.add_argument('-bid', '--blob_id', type=auto_int, help="This parameter is to add a blob id. Can be used only if the sota arg is given")
-
+parser.add_argument('-gnu', '--gnu', default="arm-none-eabi-", help="Path and prefix for gnu-tools. When none is provided 'arm-none-eabi-' is used")
 
 args = parser.parse_args()
 
