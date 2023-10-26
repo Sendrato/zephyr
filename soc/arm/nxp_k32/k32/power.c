@@ -1,5 +1,5 @@
 
-#include <zephyr/zephyr.h>
+#include <zephyr/kernel.h>
 #include <zephyr/pm/pm.h>
 #include <fsl_power.h>
 

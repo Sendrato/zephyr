@@ -25,9 +25,3 @@ config MCUX_MIDDLEWARE_MEMMANAGER_HEAP_SIZE
     default 1024
     help
         Maximum number of bytes available for MemManager in the mcux middleware.
-
-config HAS_PM
-    bool "Supports Power-Management"
-    default y
-    help
-        Has working PM support.
