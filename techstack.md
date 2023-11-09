@@ -1,0 +1,339 @@
+<!--
+--- Readme.md Snippet without images Start ---
+## Tech Stack
+Sendrato/zephyr is built on the following main stack:
+- [Ruby](https://www.ruby-lang.org) – Languages
+- [Python](https://www.python.org) – Languages
+- [Perl](http://www.perl.org/) – Languages
+- [C++](http://www.cplusplus.com/) – Languages
+- [Haskell](http://www.haskell.org/) – Languages
+- [C lang](http://en.wikipedia.org/wiki/C_(programming_language)) – Languages
+- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
+- [Sphinx](http://sphinxsearch.com/) – Search Engines
+- [NumPy](http://www.numpy.org/) – Data Science Tools
+- [Pillow](https://python-pillow.github.io/) – Image Processing and Management
+- [CMake](http://www.cmake.org/) – Java Build Tools
+- [Smalltalk](http://en.wikipedia.org/wiki/Smalltalk) – Languages
+- [Codecov](https://codecov.io/) – Code Coverage
+- [Protobuf](https://developers.google.com/protocol-buffers/) – Serialization Frameworks
+- [pytest](http://pytest.org/latest/) – Testing Frameworks
+- [Shell](https://en.wikipedia.org/wiki/Shell_script) – Shells
+- [Pylint](https://www.pylint.org/) – Code Review
+- [Assembly Language](https://en.wikipedia.org/wiki/Assembly_language) – Languages
+- [GitHub Actions](https://github.com/features/actions) – Continuous Integration
+
+Full tech stack [here](/techstack.md)
+--- Readme.md Snippet without images End ---
+
+--- Readme.md Snippet with images Start ---
+## Tech Stack
+Sendrato/zephyr is built on the following main stack:
+- <img width='25' height='25' src='https://img.stackshare.io/service/989/ruby.png' alt='Ruby'/> [Ruby](https://www.ruby-lang.org) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/993/pUBY5pVj.png' alt='Python'/> [Python](https://www.python.org) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/1048/perl.png' alt='Perl'/> [Perl](http://www.perl.org/) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/1049/cplusplus.png' alt='C++'/> [C++](http://www.cplusplus.com/) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/1069/oCgm29k9.png' alt='Haskell'/> [Haskell](http://www.haskell.org/) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/no-img-open-source.png' alt='C lang'/> [C lang](http://en.wikipedia.org/wiki/C_(programming_language)) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/1209/javascript.jpeg' alt='JavaScript'/> [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/1598/TtqoAo1V.png' alt='Sphinx'/> [Sphinx](http://sphinxsearch.com/) – Search Engines
+- <img width='25' height='25' src='https://img.stackshare.io/service/2179/default_332f874a2edb2686f578aa6389313efcea1eec41.png' alt='NumPy'/> [NumPy](http://www.numpy.org/) – Data Science Tools
+- <img width='25' height='25' src='https://img.stackshare.io/service/2375/default_1f67b0ca7416a9f52beb655f90b5602d5ef74b75.jpg' alt='Pillow'/> [Pillow](https://python-pillow.github.io/) – Image Processing and Management
+- <img width='25' height='25' src='https://img.stackshare.io/service/2424/0UlUI_y1_400x400.jpg' alt='CMake'/> [CMake](http://www.cmake.org/) – Java Build Tools
+- <img width='25' height='25' src='https://img.stackshare.io/service/2624/no-img-open-source.png' alt='Smalltalk'/> [Smalltalk](http://en.wikipedia.org/wiki/Smalltalk) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/2673/Codecov_Mark_Circle_Pink.png' alt='Codecov'/> [Codecov](https://codecov.io/) – Code Coverage
+- <img width='25' height='25' src='https://img.stackshare.io/service/4393/ma2jqJKH_400x400.png' alt='Protobuf'/> [Protobuf](https://developers.google.com/protocol-buffers/) – Serialization Frameworks
+- <img width='25' height='25' src='https://img.stackshare.io/service/4586/Lu99Qe0Z_400x400.png' alt='pytest'/> [pytest](http://pytest.org/latest/) – Testing Frameworks
+- <img width='25' height='25' src='https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png' alt='Shell'/> [Shell](https://en.wikipedia.org/wiki/Shell_script) – Shells
+- <img width='25' height='25' src='https://img.stackshare.io/service/4837/py.jpg' alt='Pylint'/> [Pylint](https://www.pylint.org/) – Code Review
+- <img width='25' height='25' src='https://img.stackshare.io/service/4934/default_71f18bbdc61fb88cefb66415bb55dc6f1e60e5ec.png' alt='Assembly Language'/> [Assembly Language](https://en.wikipedia.org/wiki/Assembly_language) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/11563/actions.png' alt='GitHub Actions'/> [GitHub Actions](https://github.com/features/actions) – Continuous Integration
+
+Full tech stack [here](/techstack.md)
+--- Readme.md Snippet with images End ---
+-->
+<div align="center">
+
+# Tech Stack File
+![](https://img.stackshare.io/repo.svg "repo") [Sendrato/zephyr](https://github.com/Sendrato/zephyr)![](https://img.stackshare.io/public_badge.svg "public")
+<br/><br/>
+|47<br/>Tools used|11/09/23 <br/>Report generated|
+|------|------|
+</div>
+
+## <img src='https://img.stackshare.io/languages.svg'/> Languages (9)
+<table><tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/4934/default_71f18bbdc61fb88cefb66415bb55dc6f1e60e5ec.png' alt='Assembly Language'>
+  <br>
+  <sub><a href="https://en.wikipedia.org/wiki/Assembly_language">Assembly Language</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/no-img-open-source.png' alt='C lang'>
+  <br>
+  <sub><a href="http://en.wikipedia.org/wiki/C_(programming_language)">C lang</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1049/cplusplus.png' alt='C++'>
+  <br>
+  <sub><a href="http://www.cplusplus.com/">C++</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1069/oCgm29k9.png' alt='Haskell'>
+  <br>
+  <sub><a href="http://www.haskell.org/">Haskell</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1209/javascript.jpeg' alt='JavaScript'>
+  <br>
+  <sub><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1048/perl.png' alt='Perl'>
+  <br>
+  <sub><a href="http://www.perl.org/">Perl</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/993/pUBY5pVj.png' alt='Python'>
+  <br>
+  <sub><a href="https://www.python.org">Python</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/989/ruby.png' alt='Ruby'>
+  <br>
+  <sub><a href="https://www.ruby-lang.org">Ruby</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+</tr>
+<tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/2624/no-img-open-source.png' alt='Smalltalk'>
+  <br>
+  <sub><a href="http://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+</tr>
+</table>
+
+## <img src='https://img.stackshare.io/frameworks.svg'/> Frameworks (1)
+<table><tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/4393/ma2jqJKH_400x400.png' alt='Protobuf'>
+  <br>
+  <sub><a href="https://developers.google.com/protocol-buffers/">Protobuf</a></sub>
+  <br>
+  <sub>v3.20.3</sub>
+</td>
+
+</tr>
+</table>
+
+## <img src='https://img.stackshare.io/devops.svg'/> DevOps (9)
+<table><tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/2424/0UlUI_y1_400x400.jpg' alt='CMake'>
+  <br>
+  <sub><a href="http://www.cmake.org/">CMake</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/2673/Codecov_Mark_Circle_Pink.png' alt='Codecov'>
+  <br>
+  <sub><a href="https://codecov.io/">Codecov</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1046/git.png' alt='Git'>
+  <br>
+  <sub><a href="http://git-scm.com/">Git</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/11563/actions.png' alt='GitHub Actions'>
+  <br>
+  <sub><a href="https://github.com/features/actions">GitHub Actions</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg' alt='PyPI'>
+  <br>
+  <sub><a href="https://pypi.org/">PyPI</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/4837/py.jpg' alt='Pylint'>
+  <br>
+  <sub><a href="https://www.pylint.org/">Pylint</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/12795/5jL6-BA5_400x400.jpeg' alt='RubyGems'>
+  <br>
+  <sub><a href="https://rubygems.org/">RubyGems</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png' alt='npm'>
+  <br>
+  <sub><a href="https://www.npmjs.com/">npm</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+</tr>
+<tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/4586/Lu99Qe0Z_400x400.png' alt='pytest'>
+  <br>
+  <sub><a href="http://pytest.org/latest/">pytest</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+</tr>
+</table>
+
+## <img src='https://img.stackshare.io/saas.svg'/> Software as a Service (SaaS) (1)
+<table><tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/2375/default_1f67b0ca7416a9f52beb655f90b5602d5ef74b75.jpg' alt='Pillow'>
+  <br>
+  <sub><a href="https://python-pillow.github.io/">Pillow</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+</tr>
+</table>
+
+## Other (7)
+<table><tr>
+  <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/2179/default_332f874a2edb2686f578aa6389313efcea1eec41.png' alt='NumPy'>
+  <br>
+  <sub><a href="http://www.numpy.org/">NumPy</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/3730/no-img-open-source.png' alt='PyYAML'>
+  <br>
+  <sub><a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png' alt='Shell'>
+  <br>
+  <sub><a href="https://en.wikipedia.org/wiki/Shell_script">Shell</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/1598/TtqoAo1V.png' alt='Sphinx'>
+  <br>
+  <sub><a href="http://sphinxsearch.com/">Sphinx</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/7913/no-img-open-source.png' alt='Verilog'>
+  <br>
+  <sub><a href="http://www.verilog.com/">Verilog</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/6225/no-img-open-source.png' alt='gdb'>
+  <br>
+  <sub><a href="https://www.sourceware.org/gdb/">gdb</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/7350/eaca159133a3901e24ddb407d1235c25_normal.png' alt='mypy'>
+  <br>
+  <sub><a href="http://mypy-lang.org/">mypy</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+</tr>
+</table>
+
+
+## <img src='https://img.stackshare.io/group.svg' /> Open source packages (20)</h2>
+
+## <img width='24' height='24' src='https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg'/> PyPI (20)
+
+|NAME|VERSION|LAST UPDATED|LAST UPDATED BY|LICENSE|VULNERABILITIES|
+|:------|:------|:------|:------|:------|:------|
+|[PyGithub](https://pypi.org/PyGithub)|N/A|08/17/21|Christopher Friedt |LGPL-3.0|N/A|
+|[anytree](https://pypi.org/anytree)|N/A|08/14/20|Anas Nashif |Apache-2.0|N/A|
+|[colorama](https://pypi.org/colorama)|N/A|01/13/21|Kumar Gala |BSD-3-Clause|N/A|
+|[coverage](https://pypi.org/coverage)|N/A|01/13/21|Kumar Gala |Apache-2.0|N/A|
+|[graphviz](https://pypi.org/graphviz)|N/A|07/10/22|Jordan Yates |MIT|N/A|
+|[grpcio-tools](https://pypi.org/grpcio-tools)|v1.47.0|05/22/23|Katarzyna Giądła |Apache-2.0|N/A|
+|[lxml](https://pypi.org/lxml)|N/A|11/11/22|Carles Cufi |BSD-3-Clause|N/A|
+|[mock](https://pypi.org/mock)|v4.0.1|07/09/20|Aastha Grover |BSD-2-Clause|N/A|
+|[natsort](https://pypi.org/natsort)|N/A|06/06/23|Grzegorz Chwierut |MIT|N/A|
+|[packaging](https://pypi.org/packaging)|N/A|02/07/20|Kumar Gala |BSD-3-Clause,Apache-2.0|N/A|
+|[ply](https://pypi.org/ply)|v3.10|02/07/20|Kumar Gala |BSD-3-Clause|N/A|
+|[progress](https://pypi.org/progress)|N/A|03/08/20|Henrik Brix Andersen |ISC|N/A|
+|[psutil](https://pypi.org/psutil)|N/A|10/08/20|Eugeniy Paltsev |BSD-3-Clause|N/A|
+|[pyelftools](https://pypi.org/pyelftools)|v0.27|06/09/22|Adrian Bonislawski |Unlicense|N/A|
+|[pyserial](https://pypi.org/pyserial)|N/A|03/27/23|Carles Cufi |BSD-3-Clause|N/A|
+|[python-magic](https://pypi.org/python-magic)|N/A|06/29/22|Carles Cufi |MIT|N/A|
+|[requests](https://pypi.org/requests)|N/A|05/19/23|Marc Herbert |Apache-2.0|N/A|
+|[sphinx_rtd_theme](https://pypi.org/sphinx_rtd_theme)|N/A|08/30/23|Benjamin Cabé |MIT|N/A|
+|[tabulate](https://pypi.org/tabulate)|N/A|01/13/21|Kumar Gala |MIT|N/A|
+|[yamllint](https://pypi.org/yamllint)|N/A|12/30/22|Fabio Baltieri |GPL-3.0|N/A|
+
+<br/>
+<div align='center'>
+
+Generated via [Stack File](https://github.com/apps/stack-file)
