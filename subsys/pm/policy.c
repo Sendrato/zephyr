@@ -170,6 +170,9 @@ const struct pm_state_info *pm_policy_next_state(uint8_t cpu, int32_t ticks)
 		}
 	}
 
+    const struct pm_state_info *state_optimal = NULL;
+    uint32_t cyc_optimal = 0;
+
 	for (int16_t i = (int16_t)num_cpu_states - 1; i >= 0; i--) {
 		const struct pm_state_info *state = &cpu_states[i];
 		uint32_t min_residency_cyc, exit_latency_cyc;
@@ -188,13 +191,19 @@ const struct pm_state_info *pm_policy_next_state(uint8_t cpu, int32_t ticks)
 			continue;
 		}
 
-		if ((cyc < 0) ||
-		    (cyc >= (min_residency_cyc + exit_latency_cyc))) {
-			return state;
-		}
+        /* track state with the lowest total cycles */
+        uint32_t total_cyc = min_residency_cyc + exit_latency_cyc;
+        if ((state_optimal == NULL) || (cyc_optimal > total_cyc)) {
+            state_optimal = state;
+            cyc_optimal = total_cyc;
+        }
 	}
 
-	return NULL;
+    if ((cyc >= 0) && (cyc < cyc_optimal)) {
+        state_optimal = NULL;
+    }
+
+    return state_optimal;
 }
 #endif
 
