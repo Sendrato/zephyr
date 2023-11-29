@@ -65,7 +65,7 @@
 #define MDM_SETUP_CMD_PDP_CTX "AT+CGDCONT=0,\"IP\",\"" CONFIG_MODEM_NRF9160_APN "\""
 
 /* Default SLM data mode terminator command */
-#define MDM_DATA_MODE_TERMINATOR "+++"
+#define MDM_DATA_MODE_TERMINATOR "!~>&}@%"
 
 /* Modem ATOI routine. */
 #define ATOI(s_, value_, desc_) modem_atoi(s_, value_, desc_, __func__)
