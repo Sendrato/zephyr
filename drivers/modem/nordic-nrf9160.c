@@ -130,6 +130,7 @@ MODEM_CMD_DEFINE(on_cmd_datarecv)
 	int available = 0;
 	uint8_t *ringbuf_ptr;
 	uint32_t claimed_len = 0;
+    size_t offset = 0;
 
 	k_sem_take(&mdata.sem_rx_ringbuf, K_FOREVER);
 
@@ -141,24 +142,37 @@ MODEM_CMD_DEFINE(on_cmd_datarecv)
 		goto error;
 	}
 
-	/* Claim len bytes in rx_ringbuf */
-	claimed_len = (int)ring_buf_put_claim(&rx_ringbuf, &ringbuf_ptr, len);
-	if (claimed_len != len) {
-		LOG_ERR("Couldn't reserve enough bytes, %d instead of %d", claimed_len, len);
-		ret = -ENOMEM;
-		goto error;
-	}
+    /*
+     * It's possible that we can't claim all bytes at once
+     * if we are close to the end of the ringbuf
+     */
+    while (len > 0) {
+        /* Claim tbc bytes in rx_ringbuf */
+        claimed_len = (int) ring_buf_put_claim(&rx_ringbuf, &ringbuf_ptr, len);
+        if (claimed_len != len) {
+            LOG_DBG("Couldn't claim enough bytes, %d instead of %d", claimed_len, len);
+        }
 
-	/* Linearize received data and copy it to rx_ringbuf */
-	ret = (int)net_buf_linearize(ringbuf_ptr, claimed_len, data->rx_buf, 0, (uint16_t)len);
+        /* Update len to the number of bytes that we still need to claim */
+        len -= claimed_len;
 
-	/* Finalize copying bytes to rx_ringbuf */
-	ret = ring_buf_put_finish(&rx_ringbuf, ret);
-	if (ret) {
-		LOG_ERR("Failed to copy all data to ringbuf");
-		ret = -ENOMEM;
-		goto error;
-	}
+        /* Linearize received data and copy it to rx_ringbuf */
+        ret = (int) net_buf_linearize(ringbuf_ptr, claimed_len, data->rx_buf, offset, (uint16_t) claimed_len);
+
+        /* Update offset in case we couldn't claim bytes all at once */
+        offset += claimed_len;
+
+        /*
+         * Finalize copying bytes to rx_ringbuf
+         * ret at this point contains the number of bytes we actually copied
+         */
+        ret = ring_buf_put_finish(&rx_ringbuf, ret);
+        if (ret) {
+            LOG_ERR("Failed to copy all data to ringbuf");
+            ret = -ENOMEM;
+            goto error;
+        }
+    }
 
 error:
 	k_sem_give(&mdata.sem_rx_ringbuf);
@@ -270,6 +284,7 @@ static ssize_t send_socket_data(struct modem_socket *sock, const struct sockaddr
 	 * Write all data to the iface and
 	 * send MDM_DATA_MODE_TERMINATOR to exit SLM Data Mode
 	 */
+    LOG_HEXDUMP_DBG(buf, buf_len, "XMODE_DATA");
 	mctx.iface.write(&mctx.iface, buf, buf_len);
 	ret = modem_cmd_send(&mctx.iface, &mctx.cmd_handler, handler_cmds, handler_cmds_len,
 			     MDM_DATA_MODE_TERMINATOR, &mdata.sem_response, timeout);
