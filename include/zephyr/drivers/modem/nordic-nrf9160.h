@@ -16,6 +16,11 @@
 extern "C" {
 #endif
 
+int mdm_nrf9160_gnss_start_oneshot(uint16_t timeout);
+int mdm_nrf9160_gnss_start_continuous(void);
+int mdm_nrf9160_gnss_start_periodic(uint16_t interval, uint16_t timeout);
+int mdm_nrf9160_gnss_stop(void);
+
 int mdm_nrf9160_reset(void);
 
 #ifdef __cplusplus

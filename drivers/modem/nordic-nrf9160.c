@@ -89,6 +89,53 @@ static int modem_atoi(const char *s, const int err_value, const char *desc, cons
 	return ret;
 }
 
+/* Function to convert a string containing floating point number to float */
+static int str_to_float(char *str, float *res)
+{
+    int ret = 0;
+    size_t len = strlen(str);
+    int idx = 0;
+
+    /* Look for the dot */
+    for (; idx < len ; idx++) {
+        if (str[idx] == '.') {
+            break;
+        }
+    }
+    /* Check if we actually found it, can't be the last char */
+    if (idx == (len - 1)) {
+        ret = -1;
+        goto error;
+    }
+
+    /* Calculate number of  decimal digits */
+    int dec_digits = (int)strlen(str) - (idx + 1);
+    /* Override the dot */
+    memcpy(&str[idx], &str[idx+1], dec_digits);
+    /* Override last char with string terminator */
+    str[len-1] = '\0';
+
+    /* Cast string to integer*/
+    int tmp = ATOI(str, -1, "tmp");
+    if (tmp >= 0) {
+        /*
+         * No pow function, so calculate the divider
+         * base on the number of decimal digits
+         */
+        float divider = 1;
+        for (int i = 0; i<dec_digits ; i++) {
+            divider *= 10;
+        }
+        /* Divide by calculated divider */
+        *res = (float)tmp / divider;
+    } else {
+        ret = -1;
+    }
+
+error:
+    return ret;
+}
+
 /*
  * Thread safe function to set modem state
  */
@@ -369,6 +416,91 @@ MODEM_CMD_DEFINE(on_cmd_unsol_cereg)
 	return 0;
 }
 
+/*
+ * Handler: #XGPS: <gnss_service>[0],<gnss_status>[1]
+ * Handler: #XGPS: <latitude>[0],<longitude>[1],<altitude>[2],<accuracy>[3],<speed>[4],<heading>[5],<datetime>[6]
+ */
+MODEM_CMD_DEFINE(on_cmd_unsol_gnss)
+{
+    int ret = 0;
+    int service = 0;
+    int status = 0;
+
+    if (argc == 2) {
+        /* Status notification*/
+        service = ATOI(argv[0], -1, "gnss_service");
+        status = ATOI(argv[1], -1, "gnss_status");
+
+        LOG_INF("Received GNSS service:%d status:%d", service, status);
+    } else if (argc >= 6) {
+        /* PVT data */
+        LOG_INF("Received PVT data:");
+        float latitude = 0;
+        if (str_to_float(argv[0], &latitude) < 0) {
+            LOG_ERR("Failed to convert latitude");
+        }
+        float longitude = 0;
+        if (str_to_float(argv[1], &longitude) < 0) {
+            LOG_ERR("Failed to convert longitude");
+        }
+        float altitude = 0;
+        if (str_to_float(argv[2], &altitude) < 0) {
+            LOG_ERR("Failed to convert altitude");
+        }
+        float accuracy = 0;
+        if (str_to_float(argv[3], &accuracy) < 0) {
+            LOG_ERR("Failed to convert accuracy");
+        }
+        float speed = 0;
+        if (str_to_float(argv[4], &speed) < 0) {
+            LOG_ERR("Failed to convert speed");
+        }
+        float heading = 0;
+        if (str_to_float(argv[5], &heading) < 0) {
+            LOG_ERR("Failed to convert heading");
+        }
+        LOG_INF("latitude:%f longitude:%f altitude:%f", latitude, longitude, altitude);
+        LOG_INF("accuracy:%f speed:%f heading:%f", accuracy, speed, heading);
+        /* TODO: why does it fail to parse datetime? */
+        if (argc == 7) {
+            LOG_INF("datetime:%s", argv[6]);
+        }
+    } else {
+        LOG_WRN("Parsed %d args", argc);
+        ret = -EIO;
+    }
+
+    return ret;
+}
+
+/*
+ * Handler: +CEDRXP: <AcT-type>[0],<requested_edrx>[1],<provided_edrx>[2],<time_window>[3]
+ * Params 1-2-3 are optional
+ */
+MODEM_CMD_DEFINE(on_cmd_unsol_edrx)
+{
+    int AcT_type = ATOI(argv[0], -1, "AcT_type");
+
+    switch (argc) {
+        case 1:
+            LOG_INF("%s AcT:%d", __func__, AcT_type);
+            break;
+        case 2:
+            LOG_INF("%s AcT:%d, req_eDRX:%s", __func__, AcT_type, argv[1]);
+            break;
+        case 3:
+            LOG_INF("%s AcT:%d req_eDRX:%s provided_eDRX:%s", __func__, AcT_type, argv[1], argv[2]);
+            break;
+        case 4:
+            LOG_INF("%s AcT:%d req_eDRX:%s provided_eDRX:%s time_window:%s", __func__, AcT_type, argv[1], argv[2], argv[3]);
+            break;
+        default:
+            LOG_WRN("Received %d args", argc);
+    }
+
+    return 0;
+}
+
 /* Handler: <manufacturer> */
 MODEM_CMD_DEFINE(on_cmd_atcmdinfo_manufacturer)
 {
@@ -600,7 +732,9 @@ static const struct modem_cmd response_cmds[] = {
 };
 
 static const struct modem_cmd unsol_cmds[] = {
-	MODEM_CMD_ARGS_MAX("+CEREG:", on_cmd_unsol_cereg, 1U, 4U, ","),
+	MODEM_CMD_ARGS_MAX("+CEREG: ", on_cmd_unsol_cereg, 1U, 4U, ","),
+    MODEM_CMD_ARGS_MAX("#XGPS: ", on_cmd_unsol_gnss, 2U, 7U, ","),
+    MODEM_CMD_ARGS_MAX("+CEDRXP: ", on_cmd_unsol_edrx, 1U, 4U, ","),
 };
 
 /* Commands sent to the modem to set it up at boot time. */
@@ -618,6 +752,39 @@ static const struct setup_cmd setup_cmds[] = {
 	SETUP_CMD("AT+CGMR", "", on_cmd_atcmdinfo_revision, 0U, ""),
 	SETUP_CMD("AT+CGSN", "", on_cmd_atcmdinfo_imei, 0U, ""),
 };
+
+/* Func: offload_gnss
+ * Desc: Fucntion to enable/disable GNSS in various modes
+ */
+static int offload_gnss(bool enable, uint16_t interval, uint16_t timeout)
+{
+    int ret = 0;
+    char sendbuf[sizeof("AT#XGPS=#,#,#####,#####\t")];
+    bool cloud_assistance = false; /* Do not use cloud assistance */
+
+    if (enable) {
+        /* Start GNSS */
+        if (interval == 1) {
+            /* Continous mode, omit timeout param */
+            snprintk(sendbuf, sizeof(sendbuf), "AT#XGPS=%d,%d,%d", enable, cloud_assistance, interval);
+        } else {
+            /* One-shot or periodic */
+            snprintk(sendbuf, sizeof(sendbuf), "AT#XGPS=%d,%d,%d,%d", enable, cloud_assistance, interval, timeout);
+        }
+    } else {
+        /* Stop GNSS */
+        snprintk(sendbuf, sizeof(sendbuf), "AT#XGPS=%d", enable);
+    }
+
+    ret = modem_cmd_send(&mctx.iface, &mctx.cmd_handler,
+                         NULL, 0, sendbuf,
+                         &mdata.sem_response, MDM_CMD_TIMEOUT);
+    if (ret) {
+        LOG_ERR("Failed to send GNSS command, error %d", ret);
+    }
+
+    return ret;
+}
 
 /* Func: modem_rx
  * Desc: Thread to process all messages received from the Modem.
@@ -1355,6 +1522,61 @@ int mdm_nrf9160_reset(void)
 	}
 error:
 	return ret;
+}
+
+/*
+ * Function used to start the GNSS in oneshot mode
+ * specifying a timeout in seconds.
+ * Passing a timeout of 0 seconds will make the GNSS
+ * run until it's able to get a fix.
+ */
+int mdm_nrf9160_gnss_start_oneshot(uint16_t timeout)
+{
+    int ret = 0;
+
+    ret = offload_gnss(true, 0, timeout);
+
+    return ret;
+}
+
+/*
+ * Function used to start the GNSS in continuous mode.
+ * In this mode the fix interval is set to 1 second.
+ */
+int mdm_nrf9160_gnss_start_continuous(void)
+{
+    int ret = 0;
+
+    ret = offload_gnss(true, 1, 0);
+
+    return ret;
+}
+
+/*
+ * Function used to start the GNSS in periodic mode
+ * specifying an interval and a timeout in seconds.
+ * Passing a timeout of 0 seconds will result in the GNSS
+ * running until it's able to get a fix.
+ */
+int mdm_nrf9160_gnss_start_periodic(uint16_t interval, uint16_t timeout)
+{
+    int ret = 0;
+
+    ret = offload_gnss(1, interval, timeout);
+
+    return ret;
+}
+
+/*
+ * Function used to stop the GNSS
+ */
+int mdm_nrf9160_gnss_stop(void)
+{
+    int ret = 0;
+
+    ret = offload_gnss(false, 0, 0);
+
+    return ret;
 }
 
 /*
