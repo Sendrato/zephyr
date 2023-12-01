@@ -753,8 +753,25 @@ static const struct setup_cmd setup_cmds[] = {
 	SETUP_CMD("AT+CGSN", "", on_cmd_atcmdinfo_imei, 0U, ""),
 };
 
+/* Func: offload_reset
+ * Desc: Function to send reset command to the modem
+ */
+static int offload_reset(void)
+{
+    int ret = 0;
+
+    ret = modem_cmd_send(&mctx.iface, &mctx.cmd_handler,
+                         NULL, 0U, "AT#XRESET",
+                         &mdata.sem_response, MDM_CMD_TIMEOUT);
+    if (ret) {
+        LOG_ERR("Failed to reset modem, error %d", ret);
+    }
+
+    return ret;
+}
+
 /* Func: offload_gnss
- * Desc: Fucntion to enable/disable GNSS in various modes
+ * Desc: Function to enable/disable GNSS in various modes
  */
 static int offload_gnss(bool enable, uint16_t interval, uint16_t timeout)
 {
@@ -1509,6 +1526,21 @@ int mdm_nrf9160_reset(void)
 {
 	int ret = 0;
 
+    /* Make sure modem is disconnected */
+    ret = modem_net_iface_enable(NULL, false);
+    if (ret < 0) {
+        LOG_ERR("Error disabling modem %d", ret);
+        goto error;
+    }
+
+    /* Reset modem */
+    ret = offload_reset();
+    if (ret) {
+        LOG_ERR("Error resetting modem %d", ret);
+        goto error;
+    }
+
+    /* Configure modem */
 	ret = modem_setup();
 	if (ret < 0) {
 		LOG_ERR("Modem setup error %d", ret);
