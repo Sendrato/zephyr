@@ -725,6 +725,18 @@ MODEM_CMD_DEFINE(on_cmd_sockselect)
 	return ret;
 }
 
+MODEM_CMD_DEFINE(on_cmd_xcoex)
+{
+    LOG_DBG("%s", argv[0]);
+    return 0;
+}
+
+MODEM_CMD_DEFINE(on_cmd_xmagpio)
+{
+    LOG_DBG("%s", argv[0]);
+    return 0;
+}
+
 static const struct modem_cmd response_cmds[] = {
 	MODEM_CMD("OK", on_cmd_ok, 0U, ""),
 	MODEM_CMD("ERROR", on_cmd_error, 0U, ""),
@@ -746,6 +758,8 @@ static const struct setup_cmd setup_cmds[] = {
 	SETUP_CMD_NOHANDLE(MDM_SETUP_CMD_PDP_CTX),
 	SETUP_CMD_NOHANDLE("AT+CEREG=2"),
 
+    SETUP_CMD("AT%XCOEX0?", "%XCOEX0: ", on_cmd_xcoex, 1U, ""),
+    SETUP_CMD("AT%XMAGPIO?", "%XMAGPIO: ", on_cmd_xmagpio, 1U, ""),
 	/* Commands to read info from the modem (things like IMEI, Model etc). */
 	SETUP_CMD("AT+CGMI", "", on_cmd_atcmdinfo_manufacturer, 0U, ""),
 	SETUP_CMD("AT+CGMM", "", on_cmd_atcmdinfo_model, 0U, ""),
