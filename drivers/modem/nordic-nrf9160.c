@@ -737,6 +737,18 @@ MODEM_CMD_DEFINE(on_cmd_xmagpio)
     return 0;
 }
 
+MODEM_CMD_DEFINE(on_cmd_nmea)
+{
+    LOG_DBG("%s", argv[0]);
+    return 0;
+}
+
+MODEM_CMD_DEFINE(on_cmd_pvt)
+{
+    LOG_DBG("PVT: %s", argv[0]);
+    return 0;
+}
+
 static const struct modem_cmd response_cmds[] = {
 	MODEM_CMD("OK", on_cmd_ok, 0U, ""),
 	MODEM_CMD("ERROR", on_cmd_error, 0U, ""),
@@ -747,6 +759,8 @@ static const struct modem_cmd unsol_cmds[] = {
 	MODEM_CMD_ARGS_MAX("+CEREG: ", on_cmd_unsol_cereg, 1U, 4U, ","),
     MODEM_CMD_ARGS_MAX("#XGPS: ", on_cmd_unsol_gnss, 2U, 7U, ","),
     MODEM_CMD_ARGS_MAX("+CEDRXP: ", on_cmd_unsol_edrx, 1U, 4U, ","),
+    MODEM_CMD("$", on_cmd_nmea, 1U, ""),
+    MODEM_CMD("PVT: ", on_cmd_pvt, 1U, ""),
 };
 
 /* Commands sent to the modem to set it up at boot time. */
