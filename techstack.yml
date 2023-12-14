@@ -1,11 +1,11 @@
 repo_name: Sendrato/zephyr
-report_id: b16899365337b6cdc63d3b8136fa86a4
+report_id: a0cf2622eb4ff26caa7ce5b3b7c9d627
 repo_type: Public
-timestamp: '2023-11-09T15:37:30+00:00'
-requested_by: nordic-krch
+timestamp: '2023-12-14T09:48:09+00:00'
+requested_by: rodrigopex
 provider: github
 branch: master
-detected_tools_count: 47
+detected_tools_count: 53
 tools:
 - name: Assembly Language
   description: A low-level programming language
@@ -53,9 +53,9 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1209/javascript.jpeg
-  detection_source: scripts/requirements-base.txt
-  last_updated_by: Kumar Gala
-  last_updated_on: 2020-02-07 20:58:00.000000000 Z
+  detection_source: scripts/requirements-extras.txt
+  last_updated_by: Anas Nashif
+  last_updated_on: 2022-07-11 14:59:14.000000000 Z
 - name: Perl
   description: Highly capable, feature-rich programming language with over 26 years
     of development
@@ -106,10 +106,21 @@ tools:
   category: Languages & Frameworks
   sub_category: Serialization Frameworks
   image_url: https://img.stackshare.io/service/4393/ma2jqJKH_400x400.png
-  detection_source_url: scripts/requirements-extras.txt
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Katarzyna Giądła
   last_updated_on: 2023-05-22 13:09:10.000000000 Z
+- name: pgvector
+  description: Open-source vector similarity search for Postgres
+  website_url: https://github.com/pgvector/pgvector/
+  open_source: false
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Database Tools
+  image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source: CMakeLists.txt
+  last_updated_by: Torsten Rasmussen
+  last_updated_on: 2023-10-30 10:18:51.000000000 Z
 - name: CMake
   description: 'An open-source system that manages the build process '
   website_url: http://www.cmake.org/
@@ -147,9 +158,21 @@ tools:
   category: Build, Test, Deploy
   sub_category: Continuous Integration
   image_url: https://img.stackshare.io/service/11563/actions.png
-  detection_source: ".github/workflows/west_cmds.yml"
+  detection_source: ".github/workflows/assigner.yml"
   last_updated_by: Stephanos Ioannidis
   last_updated_on: 2022-10-13 17:48:20.000000000 Z
+- name: Gitlint
+  description: Linting your Git commit messages
+  website_url: http://jorisroovers.github.io/gitlint
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Git Tools
+  image_url: https://img.stackshare.io/service/21482/default_10a6e832235469ead59b89c7ab30552c99336e48.png
+  detection_source: scripts/requirements-extras.txt
+  last_updated_by: Kumar Gala
+  last_updated_on: 2020-02-07 20:58:00.000000000 Z
 - name: PyPI
   description: A repository of software for the Python programming language
   website_url: https://pypi.org/
@@ -192,7 +215,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Front End Package Manager
   image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
-  detection_source: scripts/requirements-base.txt
+  detection_source: scripts/requirements-extras.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
 - name: pytest
@@ -218,6 +241,26 @@ tools:
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Jonathan Rico
   last_updated_on: 2023-08-22 20:34:27.000000000 Z
+- name: HTML
+  description: Hypertext Markup Language for creating web pages.
+  website_url: http://
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source: doc/_doxygen/footer.html
+  last_updated_by: Gerard Marull-Paretas
+  last_updated_on: 2021-10-03 16:45:28.000000000 Z
+- name: LangChain
+  description: Build AI apps with LLMs through composability
+  website_url: https://github.com/hwchase17/langchain
+  open_source: true
+  hosted_saas: false
+  category: Communications
+  sub_category: Large Language Model Tools
+  image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source: CMakeLists.txt
+  last_updated_by: Keith Packard
+  last_updated_on: 2022-04-27 02:24:11.000000000 Z
 - name: NumPy
   description: Fundamental package for scientific computing with Python
   website_url: http://www.numpy.org/
@@ -237,7 +280,7 @@ tools:
   image_url: https://img.stackshare.io/service/3730/no-img-open-source.png
   detection_source: scripts/requirements-base.txt
   last_updated_by: Marc Herbert
-  last_updated_on: 2021-01-08 21:43:25.000000000 Z
+  last_updated_on: 2021-01-12 00:01:45.000000000 Z
 - name: Shell
   description: A shell is a text-based terminal, used for manipulating programs and
     files. Shell scripts typically manage program execution.
@@ -248,18 +291,6 @@ tools:
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
   detection_source: Repo Metadata
-- name: Sphinx
-  description: Open source full text search server, designed from the ground up with
-    performance, relevance (aka search quality), and integration simplicity in mind
-  website_url: http://sphinxsearch.com/
-  open_source: false
-  hosted_saas: false
-  category: Application Utilities
-  sub_category: Search Engines
-  image_url: https://img.stackshare.io/service/1598/TtqoAo1V.png
-  detection_source: scripts/dts/python-devicetree/requirements.txt
-  last_updated_by: Benjamin Cabé
-  last_updated_on: 2023-08-30 07:26:48.000000000 Z
 - name: Verilog
   website_url: http://www.verilog.com/
   open_source: false
@@ -285,7 +316,7 @@ tools:
   last_updated_on: 2020-08-21 22:47:22.000000000 Z
 - name: PyGithub
   description: Use the full Github API v3
-  package_url: https://pypi.org/PyGithub
+  package_url: https://pypi.org/project/PyGithub
   license: LGPL-3.0
   open_source: true
   hosted_saas: false
@@ -297,19 +328,33 @@ tools:
   last_updated_on: 2021-08-17 12:10:07.000000000 Z
 - name: anytree
   description: Powerful and Lightweight Python Tree Data Structure.
-  package_url: https://pypi.org/anytree
+  package_url: https://pypi.org/project/anytree
   license: Apache-2.0
   open_source: true
   hosted_saas: false
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20513/default_18bb83c7f98aaa7340bc5d2ca9b439885b1d95bc.png
-  detection_source: scripts/requirements-extras.txt
+  detection_source: scripts/requirements-base.txt
   last_updated_by: Anas Nashif
   last_updated_on: 2020-08-14 19:46:09.000000000 Z
+- name: breathe
+  description: Sphinx Doxygen renderer
+  package_url: https://pypi.org/project/breathe
+  version: '4.34'
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/doc/requirements.txt
+  detection_source: doc/requirements.txt
+  last_updated_by: Benjamin Cabé
+  last_updated_on: 2023-08-09 15:52:00.000000000 Z
 - name: colorama
   description: Cross-platform colored terminal text
-  package_url: https://pypi.org/colorama
+  package_url: https://pypi.org/project/colorama
   license: BSD-3-Clause
   open_source: true
   hosted_saas: false
@@ -321,7 +366,7 @@ tools:
   last_updated_on: 2021-01-13 18:08:34.000000000 Z
 - name: coverage
   description: Code coverage measurement for Python
-  package_url: https://pypi.org/coverage
+  package_url: https://pypi.org/project/coverage
   license: Apache-2.0
   open_source: true
   hosted_saas: false
@@ -333,7 +378,7 @@ tools:
   last_updated_on: 2021-01-13 18:08:34.000000000 Z
 - name: graphviz
   description: Simple Python interface for Graphviz
-  package_url: https://pypi.org/graphviz
+  package_url: https://pypi.org/project/graphviz
   license: MIT
   open_source: true
   hosted_saas: false
@@ -345,7 +390,7 @@ tools:
   last_updated_on: 2022-07-10 03:46:17.000000000 Z
 - name: grpcio-tools
   description: Protobuf code generator for gRPC
-  package_url: https://pypi.org/grpcio-tools
+  package_url: https://pypi.org/project/grpcio-tools
   version: 1.47.0
   license: Apache-2.0
   open_source: true
@@ -353,14 +398,26 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20003/default_87268cab0d3a3b3acf3aa0576d4b114b8e4c2521.png
-  detection_source_url: scripts/requirements-extras.txt
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Katarzyna Giądła
   last_updated_on: 2023-05-22 13:09:10.000000000 Z
+- name: junitparser
+  description: Manipulates JUnit/xUnit Result XML files
+  package_url: https://pypi.org/project/junitparser
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source: scripts/requirements-compliance.txt
+  last_updated_by: Henri Xavier
+  last_updated_on: 2022-07-28 15:38:05.000000000 Z
 - name: lxml
   description: Powerful and Pythonic XML processing library combining libxml2/libxslt
     with the ElementTree API
-  package_url: https://pypi.org/lxml
+  package_url: https://pypi.org/project/lxml
   license: BSD-3-Clause
   open_source: true
   hosted_saas: false
@@ -372,7 +429,7 @@ tools:
   last_updated_on: 2022-11-11 14:48:35.000000000 Z
 - name: mock
   description: Rolling backport of unittest.mock for all Pythons
-  package_url: https://pypi.org/mock
+  package_url: https://pypi.org/project/mock
   version: 4.0.1
   license: BSD-2-Clause
   open_source: true
@@ -380,13 +437,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19876/default_8902c10687fbcd6273bdbe119fff40fa1180763f.png
-  detection_source_url: scripts/requirements-build-test.txt
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Aastha Grover
   last_updated_on: 2020-07-09 04:39:05.000000000 Z
 - name: natsort
   description: Simple yet flexible natural sorting in Python
-  package_url: https://pypi.org/natsort
+  package_url: https://pypi.org/project/natsort
   license: MIT
   open_source: true
   hosted_saas: false
@@ -398,7 +455,7 @@ tools:
   last_updated_on: 2023-06-06 12:12:37.000000000 Z
 - name: packaging
   description: Core utilities for Python packages
-  package_url: https://pypi.org/packaging
+  package_url: https://pypi.org/project/packaging
   license: BSD-3-Clause,Apache-2.0
   open_source: true
   hosted_saas: false
@@ -410,7 +467,7 @@ tools:
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
 - name: ply
   description: Python Lex &amp; Yacc
-  package_url: https://pypi.org/ply
+  package_url: https://pypi.org/project/ply
   version: '3.10'
   license: BSD-3-Clause
   open_source: true
@@ -418,13 +475,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20290/default_bae4ec34e549383af798a405820088989f617ff0.png
-  detection_source_url: scripts/requirements-build-test.txt
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
 - name: progress
   description: Easy to use progress bars
-  package_url: https://pypi.org/progress
+  package_url: https://pypi.org/project/progress
   license: ISC
   open_source: true
   hosted_saas: false
@@ -436,19 +493,19 @@ tools:
   last_updated_on: 2020-03-08 20:48:48.000000000 Z
 - name: psutil
   description: Cross-platform lib for process and system monitoring in Python
-  package_url: https://pypi.org/psutil
+  package_url: https://pypi.org/project/psutil
   license: BSD-3-Clause
   open_source: true
   hosted_saas: false
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19851/default_ac77a75c05474acf9389d56b1f5cc8241af4c384.png
-  detection_source: scripts/requirements-run-test.txt
+  detection_source: scripts/requirements-base.txt
   last_updated_by: Eugeniy Paltsev
   last_updated_on: 2020-10-08 17:59:39.000000000 Z
 - name: pyelftools
   description: Library for analyzing ELF files and DWARF debugging information
-  package_url: https://pypi.org/pyelftools
+  package_url: https://pypi.org/project/pyelftools
   version: '0.27'
   license: Unlicense
   open_source: true
@@ -456,13 +513,25 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20417/default_a3f7b5f8d2808a62e9d8a7dcb16a76a48aed59a6.png
-  detection_source_url: scripts/requirements-base.txt
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Adrian Bonislawski
   last_updated_on: 2022-06-09 18:41:01.000000000 Z
+- name: pykwalify
+  description: Python lib/cli for JSON/YAML schema validation
+  package_url: https://pypi.org/project/pykwalify
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source: doc/requirements.txt
+  last_updated_by: Marc Herbert
+  last_updated_on: 2021-01-08 21:43:25.000000000 Z
 - name: pyserial
   description: Python Serial Port Extension
-  package_url: https://pypi.org/pyserial
+  package_url: https://pypi.org/project/pyserial
   license: BSD-3-Clause
   open_source: true
   hosted_saas: false
@@ -474,7 +543,7 @@ tools:
   last_updated_on: 2023-03-27 13:26:45.000000000 Z
 - name: python-magic
   description: File type identification using libmagic
-  package_url: https://pypi.org/python-magic
+  package_url: https://pypi.org/project/python-magic
   license: MIT
   open_source: true
   hosted_saas: false
@@ -486,7 +555,7 @@ tools:
   last_updated_on: 2022-06-29 15:02:09.000000000 Z
 - name: requests
   description: Python HTTP for Humans
-  package_url: https://pypi.org/requests
+  package_url: https://pypi.org/project/requests
   license: Apache-2.0
   open_source: true
   hosted_saas: false
@@ -498,19 +567,19 @@ tools:
   last_updated_on: 2023-05-19 21:28:14.000000000 Z
 - name: sphinx_rtd_theme
   description: Read the Docs theme for Sphinx
-  package_url: https://pypi.org/sphinx_rtd_theme
+  package_url: https://pypi.org/project/sphinx_rtd_theme
   license: MIT
   open_source: true
   hosted_saas: false
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20304/default_506725603cd9affb22ffa36e3939310b26cbf952.png
-  detection_source: scripts/dts/python-devicetree/requirements.txt
+  detection_source: doc/requirements.txt
   last_updated_by: Benjamin Cabé
   last_updated_on: 2023-08-30 07:26:48.000000000 Z
 - name: tabulate
   description: Pretty-print tabular data
-  package_url: https://pypi.org/tabulate
+  package_url: https://pypi.org/project/tabulate
   license: MIT
   open_source: true
   hosted_saas: false
@@ -522,7 +591,7 @@ tools:
   last_updated_on: 2021-01-13 18:08:34.000000000 Z
 - name: yamllint
   description: A linter for YAML files
-  package_url: https://pypi.org/yamllint
+  package_url: https://pypi.org/project/yamllint
   license: GPL-3.0
   open_source: true
   hosted_saas: false
