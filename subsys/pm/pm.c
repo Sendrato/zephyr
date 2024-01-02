@@ -169,6 +169,8 @@ bool pm_state_force(uint8_t cpu, const struct pm_state_info *info)
 	return true;
 }
 
+const struct pm_state_info *info_test;
+
 bool pm_system_suspend(int32_t ticks)
 {
 	uint8_t id = CURRENT_CPU;
@@ -182,7 +184,6 @@ bool pm_system_suspend(int32_t ticks)
 		z_cpus_pm_forced_state[id].state = PM_STATE_ACTIVE;
 	} else {
 		const struct pm_state_info *info;
-
 		info = pm_policy_next_state(id, ticks);
 		if (info != NULL) {
 			z_cpus_pm_state[id] = *info;

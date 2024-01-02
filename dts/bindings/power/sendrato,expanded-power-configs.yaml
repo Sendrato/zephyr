@@ -1,0 +1,29 @@
+description: qn9090 power management configuration for domains
+
+compatible: "sendrato,expanded-power-configs"
+
+include: zephyr,power-state.yaml
+
+properties:
+
+  gpio-wakeup:
+    type: boolean
+    required: false
+    description: bool to decide if wakeup source is GPIO
+
+  timer-wakeup:
+    type: boolean
+    required: false
+    description: bool to decide if wakeup source is timer
+
+  retain-ram-domain: #retain sram
+    type: boolean
+    required: false
+    description: bool to decide if RAM should be retained between boots
+
+  retain-radio-device: #retain radio
+    type: boolean
+    required: false
+    description: bool to decide if radio config should be retained between boots
+
+

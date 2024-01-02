@@ -12,6 +12,7 @@
 #include <dt-bindings/i2c/i2c.h>
 
 / {
+
 	chosen {
 		zephyr,flash-controller = &iap;
 	};
@@ -25,57 +26,50 @@
 			compatible = "arm,cortex-m4";
 			reg = <0>;
             clock-frequency = <48000000>;
+            cpu-power-states = <&state0 &state1 &state2>;
 		};
-	};
 
-    power-states {
-        state0: state0 {
-            compatible = "zephyr,power-state";      //TODO: uitzoeken waarom compatibles hieronder lpc en niet k32 zijn. lpc drivers werken ook?
-            power-state-name = "active";
-            min-residency-us = <10000>;
-            exit-latency-us = <100>;
-        };
+        //TODO: voor nu pas ik dingen aan in dit bestand, maar iets met een overlay is uiteindelijk mooier
+        power_states: power-states {
+        //    state0: state0 {
+        //        compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
+        //        power-state-name = "active";
+        //        min-residency-us = <10000>;
+        //        exit-latency-us = <100>;
+        //        substate-id=<0>;
+        //    };
 
-        state1: state1 {
-            compatible = "zephyr,power-state";
-            power-state-name = "runtime-idle";
-            min-residency-us = <50000>;
-            exit-latency-us = <500>;
-        };
+            state0: state0 {
+                compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
+                power-state-name = "suspend-to-idle";
+                min-residency-us = <1000>;
+                exit-latency-us = <0>;
+                substate-id=<0>;
 
-        state2: state2 {
-            compatible = "zephyr,power-state";
-            power-state-name = "suspend-to-idle";
-            min-residency-us = <50000>;
-            exit-latency-us = <500>;
-        };
+            };
 
-        state3: state3 {
-            compatible = "zephyr,power-state";
-            power-state-name = "standby";
-            min-residency-us = <50000>;
-            exit-latency-us = <500>;
-        };
+            state1: state1 {
+                compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
+                power-state-name = "suspend-to-ram";
+                min-residency-us = <300>;
+                exit-latency-us = <50>; //from datasheet page 59
+                substate-id=<1>;
+                gpio-wakeup;
+                retain-ram-domain;
+           };
 
-        state4: state4 {
-            compatible = "zephyr,power-state";
-            power-state-name = "suspend-to-ram";
-            min-residency-us = <50000>;
-            exit-latency-us = <500>;
-        };
+            state2: state2 {
+                compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
+                power-state-name = "suspend-to-ram";
+                min-residency-us = <500>;
+                exit-latency-us = <499>;
+                substate-id=<2>;
+                retain-ram-domain;
+                //timer-wakeup;
+                gpio-wakeup;
+                retain-radio-device;
+            };
 
-        state5: state5 {
-            compatible = "zephyr,power-state";
-            power-state-name = "suspend-to-disk";
-            min-residency-us = <50000>;
-            exit-latency-us = <500>;
-        };
-
-        state6: state6 {
-            compatible = "zephyr,power-state";
-            power-state-name = "soft-off";
-            min-residency-us = <50000>;
-            exit-latency-us = <500>;
         };
     };
 

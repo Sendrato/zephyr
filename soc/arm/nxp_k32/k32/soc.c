@@ -142,6 +142,7 @@ static ALWAYS_INLINE void enable_internal_ntag(void)
 
 static int nxp_k32_init(void)
 {
+    SCB->SHP[11] = 30;
 	/* old interrupt lock level */
 	unsigned int oldLevel;
 
