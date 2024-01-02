@@ -1101,7 +1101,7 @@ void k_sched_unlock(void)
 struct k_thread *z_swap_next_thread(void)
 {
 #ifdef CONFIG_SMP
-	struct k_thread *ret = next_up();
+	zephyr smpstruct k_thread *ret = next_up();
 
 	if (ret == _current) {
 		/* When not swapping, have to signal IPIs here.  In
