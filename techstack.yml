@@ -1,11 +1,12 @@
 repo_name: Sendrato/zephyr
-report_id: 7b2c52681e094a1aa91a3f7f4cc30204
+report_id: b16899365337b6cdc63d3b8136fa86a4
+version: 0.1
 repo_type: Public
-timestamp: '2023-12-14T10:00:24+00:00'
+timestamp: '2024-01-04T14:59:27+00:00'
 requested_by: rodrigopex
 provider: github
 branch: master
-detected_tools_count: 53
+detected_tools_count: 55
 tools:
 - name: Assembly Language
   description: A low-level programming language
@@ -15,6 +16,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4934/default_71f18bbdc61fb88cefb66415bb55dc6f1e60e5ec.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: C lang
   description: One of the most widely used programming languages of all time
@@ -24,6 +26,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/no-img-open-source.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: C++
   description: Has imperative, object-oriented and generic programming features, while
@@ -34,6 +37,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1049/cplusplus.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: Haskell
   description: An advanced purely-functional programming language
@@ -43,6 +47,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1069/oCgm29k9.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: JavaScript
   description: Lightweight, interpreted, object-oriented language with first-class
@@ -53,6 +58,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Anas Nashif
   last_updated_on: 2022-07-11 14:59:14.000000000 Z
@@ -65,6 +71,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1048/perl.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: Python
   description: A clear and powerful object-oriented programming language, comparable
@@ -75,6 +82,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: Ruby
   description: A dynamic, interpreted, open source programming language with a focus
@@ -85,6 +93,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/989/ruby.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-run-test.txt
   detection_source: scripts/requirements-run-test.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
@@ -96,6 +105,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/2624/no-img-open-source.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: Protobuf
   description: Google's data interchange format
@@ -118,6 +128,7 @@ tools:
   category: Data Stores
   sub_category: Database Tools
   image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/CMakeLists.txt
   detection_source: CMakeLists.txt
   last_updated_by: Torsten Rasmussen
   last_updated_on: 2023-10-30 10:18:51.000000000 Z
@@ -129,6 +140,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Java Build Tools
   image_url: https://img.stackshare.io/service/2424/0UlUI_y1_400x400.jpg
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: Codecov
   description: Hosted coverage reports with awesome features to enhance your CI workflow
@@ -138,6 +150,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Code Coverage
   image_url: https://img.stackshare.io/service/2673/Codecov_Mark_Circle_Pink.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/.codecov.yml
   detection_source: ".codecov.yml"
   last_updated_by: Anas Nashif
   last_updated_on: 2018-01-02 21:11:06.000000000 Z
@@ -149,6 +162,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: GitHub Actions
   description: Automate your workflow from idea to production
@@ -158,6 +172,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Continuous Integration
   image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/.github/workflows/assigner.yml
   detection_source: ".github/workflows/assigner.yml"
   last_updated_by: Stephanos Ioannidis
   last_updated_on: 2022-10-13 17:48:20.000000000 Z
@@ -170,6 +185,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Git Tools
   image_url: https://img.stackshare.io/service/21482/default_10a6e832235469ead59b89c7ab30552c99336e48.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
@@ -181,6 +197,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Hosted Package Repository
   image_url: https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/tests/kernel/timer/timer_behavior/pytest/requirements-saleae.txt
   detection_source: tests/kernel/timer/timer_behavior/pytest/requirements-saleae.txt
   last_updated_by: Ederson de Souza
   last_updated_on: 2023-09-12 00:24:42.000000000 Z
@@ -193,6 +210,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Code Review
   image_url: https://img.stackshare.io/service/4837/py.jpg
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-compliance.txt
   detection_source: scripts/requirements-compliance.txt
   last_updated_by: Fabio Baltieri
   last_updated_on: 2022-12-30 15:34:10.000000000 Z
@@ -204,6 +222,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Package Managers
   image_url: https://img.stackshare.io/service/12795/5jL6-BA5_400x400.jpeg
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-run-test.txt
   detection_source: scripts/requirements-run-test.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
@@ -215,6 +234,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Front End Package Manager
   image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
@@ -227,6 +247,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Testing Frameworks
   image_url: https://img.stackshare.io/service/4586/Lu99Qe0Z_400x400.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Aastha Grover
   last_updated_on: 2020-06-01 23:08:20.000000000 Z
@@ -238,6 +259,7 @@ tools:
   category: Assets and Media
   sub_category: Image Processing and Management
   image_url: https://img.stackshare.io/service/2375/default_1f67b0ca7416a9f52beb655f90b5602d5ef74b75.jpg
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Jonathan Rico
   last_updated_on: 2023-08-22 20:34:27.000000000 Z
@@ -247,6 +269,7 @@ tools:
   open_source: false
   hosted_saas: false
   image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/doc/_doxygen/footer.html
   detection_source: doc/_doxygen/footer.html
   last_updated_by: Gerard Marull-Paretas
   last_updated_on: 2021-10-03 16:45:28.000000000 Z
@@ -258,6 +281,7 @@ tools:
   category: Communications
   sub_category: Large Language Model Tools
   image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/CMakeLists.txt
   detection_source: CMakeLists.txt
   last_updated_by: Keith Packard
   last_updated_on: 2022-04-27 02:24:11.000000000 Z
@@ -270,6 +294,7 @@ tools:
   category: Libraries
   sub_category: Data Science Tools
   image_url: https://img.stackshare.io/service/2179/default_332f874a2edb2686f578aa6389313efcea1eec41.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/tests/kernel/timer/timer_behavior/pytest/requirements-saleae.txt
   detection_source: tests/kernel/timer/timer_behavior/pytest/requirements-saleae.txt
   last_updated_by: Ederson de Souza
   last_updated_on: 2023-09-12 00:24:42.000000000 Z
@@ -278,6 +303,7 @@ tools:
   open_source: false
   hosted_saas: false
   image_url: https://img.stackshare.io/service/3730/no-img-open-source.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Marc Herbert
   last_updated_on: 2021-01-12 00:01:45.000000000 Z
@@ -290,12 +316,14 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: Verilog
   website_url: http://www.verilog.com/
   open_source: false
   hosted_saas: false
   image_url: https://img.stackshare.io/service/7913/no-img-open-source.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: gdb
   description: GNU debugger tool
@@ -303,6 +331,7 @@ tools:
   open_source: false
   hosted_saas: false
   image_url: https://img.stackshare.io/service/6225/no-img-open-source.png
+  detection_source_url: https://github.com/Sendrato/zephyr
   detection_source: Repo Metadata
 - name: mypy
   description: Developers of mypy, a Python variant with seamless dynamic and static
@@ -311,6 +340,7 @@ tools:
   open_source: false
   hosted_saas: false
   image_url: https://img.stackshare.io/service/7350/eaca159133a3901e24ddb407d1235c25_normal.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Martí Bolívar
   last_updated_on: 2020-08-21 22:47:22.000000000 Z
@@ -323,9 +353,31 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19957/default_f0290ff2792e2af7d13f5c82ed82206842ec288d.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Christopher Friedt
   last_updated_on: 2021-08-17 12:10:07.000000000 Z
+- name: PyYAML
+  description: YAML parser and emitter for Python
+  package_url: https://pypi.org/project/PyYAML
+  version: '5.1'
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19829/default_74a61b43bdb9fc0cba2978316b9976f43545029b.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/doc/requirements.txt
+  detection_source: doc/requirements.txt
+  last_updated_by: Marc Herbert
+  last_updated_on: 2021-01-08 21:43:25.000000000 Z
+  vulnerabilities:
+  - name: Improper Input Validation in PyYAML
+    cve_id: CVE-2020-14343
+    cve_url: https://github.com/advisories/GHSA-8q59-q68h-6hv4
+    detected_date: Aug 22
+    severity: critical
+    first_patched: '5.4'
 - name: anytree
   description: Powerful and Lightweight Python Tree Data Structure.
   package_url: https://pypi.org/project/anytree
@@ -335,6 +387,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20513/default_18bb83c7f98aaa7340bc5d2ca9b439885b1d95bc.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Anas Nashif
   last_updated_on: 2020-08-14 19:46:09.000000000 Z
@@ -361,6 +414,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19845/default_accee5d2b8ed75c2245f13504daf75b1cbc8cc9f.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2021-01-13 18:08:34.000000000 Z
@@ -373,6 +427,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19904/default_1d0eb6da6bdd342bb15f73d8f1721516ebacd1dc.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2021-01-13 18:08:34.000000000 Z
@@ -385,6 +440,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19981/default_ccb381b493daf0d966e015380e1894fdbc637ad3.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-extras.txt
   detection_source: scripts/requirements-extras.txt
   last_updated_by: Jordan Yates
   last_updated_on: 2022-07-10 03:46:17.000000000 Z
@@ -411,6 +467,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-compliance.txt
   detection_source: scripts/requirements-compliance.txt
   last_updated_by: Henri Xavier
   last_updated_on: 2022-07-28 15:38:05.000000000 Z
@@ -424,6 +481,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19835/default_85689b353a3a9409328e253ea28d859d29151e0c.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-compliance.txt
   detection_source: scripts/requirements-compliance.txt
   last_updated_by: Carles Cufi
   last_updated_on: 2022-11-11 14:48:35.000000000 Z
@@ -441,6 +499,19 @@ tools:
   detection_source: scripts/requirements-build-test.txt
   last_updated_by: Aastha Grover
   last_updated_on: 2020-07-09 04:39:05.000000000 Z
+- name: mypy
+  description: Optional static typing for Python
+  package_url: https://pypi.org/project/mypy
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20219/default_d4dd0466552a9776ca8535b869e22a3362790c94.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-build-test.txt
+  detection_source: scripts/requirements-build-test.txt
+  last_updated_by: Martí Bolívar
+  last_updated_on: 2020-08-21 22:47:22.000000000 Z
 - name: natsort
   description: Simple yet flexible natural sorting in Python
   package_url: https://pypi.org/project/natsort
@@ -450,6 +521,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20143/default_1c2436d58f201b4fcdd3a2802eae3e5ee67142b3.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-run-test.txt
   detection_source: scripts/requirements-run-test.txt
   last_updated_by: Grzegorz Chwierut
   last_updated_on: 2023-06-06 12:12:37.000000000 Z
@@ -462,6 +534,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19894/default_f716e4bc541a9eb6e3f5b7a20d7c35355075b0b4.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2020-02-07 20:58:00.000000000 Z
@@ -488,6 +561,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20171/default_61c5587692a15177a925ec9469e353b56dcc7b6a.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Henrik Brix Andersen
   last_updated_on: 2020-03-08 20:48:48.000000000 Z
@@ -500,6 +574,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19851/default_ac77a75c05474acf9389d56b1f5cc8241af4c384.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Eugeniy Paltsev
   last_updated_on: 2020-10-08 17:59:39.000000000 Z
@@ -526,6 +601,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/doc/requirements.txt
   detection_source: doc/requirements.txt
   last_updated_by: Marc Herbert
   last_updated_on: 2021-01-08 21:43:25.000000000 Z
@@ -538,6 +614,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19872/default_60b55c6e7ce7a6f609d0d19bae5378c2c75789d0.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Carles Cufi
   last_updated_on: 2023-03-27 13:26:45.000000000 Z
@@ -550,6 +627,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20245/default_79c7a01488eebdf30ca22b7316d9f77bbe7fad8b.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-compliance.txt
   detection_source: scripts/requirements-compliance.txt
   last_updated_by: Carles Cufi
   last_updated_on: 2022-06-29 15:02:09.000000000 Z
@@ -562,6 +640,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19826/default_d7c684bf2673f008a9f02ac93901229297a22d7e.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-base.txt
   detection_source: scripts/requirements-base.txt
   last_updated_by: Marc Herbert
   last_updated_on: 2023-05-19 21:28:14.000000000 Z
@@ -574,6 +653,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20304/default_506725603cd9affb22ffa36e3939310b26cbf952.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/doc/requirements.txt
   detection_source: doc/requirements.txt
   last_updated_by: Benjamin Cabé
   last_updated_on: 2023-08-30 07:26:48.000000000 Z
@@ -586,6 +666,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19864/default_7975a21f3bf03129dc3bc4168cf7cb7ee2cc14cc.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-run-test.txt
   detection_source: scripts/requirements-run-test.txt
   last_updated_by: Kumar Gala
   last_updated_on: 2021-01-13 18:08:34.000000000 Z
@@ -598,6 +679,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20506/default_dcfd16fdf7f5ec686bd8934c31e6383c6da8356b.png
+  detection_source_url: https://github.com/Sendrato/zephyr/blob/master/scripts/requirements-compliance.txt
   detection_source: scripts/requirements-compliance.txt
   last_updated_by: Fabio Baltieri
   last_updated_on: 2022-12-30 15:34:10.000000000 Z
