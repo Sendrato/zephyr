@@ -64,7 +64,7 @@ Full tech stack [here](/techstack.md)
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [Sendrato/zephyr](https://github.com/Sendrato/zephyr)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|53<br/>Tools used|12/14/23 <br/>Report generated|
+|55<br/>Tools used|01/04/24 <br/>Report generated|
 |------|------|
 </div>
 
@@ -343,13 +343,14 @@ Full tech stack [here](/techstack.md)
 </table>
 
 
-## <img src='https://img.stackshare.io/group.svg' /> Open source packages (23)</h2>
+## <img src='https://img.stackshare.io/group.svg' /> Open source packages (25)</h2>
 
-## <img width='24' height='24' src='https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg'/> PyPI (23)
+## <img width='24' height='24' src='https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg'/> PyPI (25)
 
 |NAME|VERSION|LAST UPDATED|LAST UPDATED BY|LICENSE|VULNERABILITIES|
 |:------|:------|:------|:------|:------|:------|
 |[PyGithub](https://pypi.org/project/PyGithub)|N/A|08/17/21|Christopher Friedt |LGPL-3.0|N/A|
+|[PyYAML](https://pypi.org/project/PyYAML)|v5.1|01/08/21|Marc Herbert |MIT|[CVE-2020-14343](https://github.com/advisories/GHSA-8q59-q68h-6hv4) (Critical)|
 |[anytree](https://pypi.org/project/anytree)|N/A|08/14/20|Anas Nashif |Apache-2.0|N/A|
 |[breathe](https://pypi.org/project/breathe)|v4.34|08/09/23|Benjamin Cabé |BSD-3-Clause|N/A|
 |[colorama](https://pypi.org/project/colorama)|N/A|01/13/21|Kumar Gala |BSD-3-Clause|N/A|
@@ -359,6 +360,7 @@ Full tech stack [here](/techstack.md)
 |[junitparser](https://pypi.org/project/junitparser)|N/A|07/28/22|Henri Xavier |Apache-2.0|N/A|
 |[lxml](https://pypi.org/project/lxml)|N/A|11/11/22|Carles Cufi |BSD-3-Clause|N/A|
 |[mock](https://pypi.org/project/mock)|v4.0.1|07/09/20|Aastha Grover |BSD-2-Clause|N/A|
+|[mypy](https://pypi.org/project/mypy)|N/A|08/21/20|Martí Bolívar |MIT|N/A|
 |[natsort](https://pypi.org/project/natsort)|N/A|06/06/23|Grzegorz Chwierut |MIT|N/A|
 |[packaging](https://pypi.org/project/packaging)|N/A|02/07/20|Kumar Gala |BSD-3-Clause,Apache-2.0|N/A|
 |[ply](https://pypi.org/project/ply)|v3.10|02/07/20|Kumar Gala |BSD-3-Clause|N/A|
