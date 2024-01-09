@@ -96,7 +96,7 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
             break;
 
         }else if((state == PM_STATE_STANDBY || PM_STATE_SUSPEND_TO_IDLE) && qn9090_config[state_count].substate_id == substate_id){
-            //ret = POWER_EnterPowerMode(PM_DEEP_SLEEP, &qn9090_config[state_count].config);
+            ret = POWER_EnterPowerMode(PM_DEEP_SLEEP, &qn9090_config[state_count].config);
             break;
 
         }else if(state == PM_STATE_RUNTIME_IDLE && qn9090_config[state_count].substate_id == substate_id) {
