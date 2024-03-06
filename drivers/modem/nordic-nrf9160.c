@@ -1341,21 +1341,21 @@ void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, voi
 		LOG_DBG("accuracy:%d speed:%d heading:%d", accuracy, speed, heading);
 		LOG_DBG("datetime:%s", argv[7]);
 
+		/* clang-format off */
 		struct gnss_data fix_data = {
-			.nav_data =
-				{
-					.latitude = latitude,
-					.longitude = longitude,
-					.altitude = (int32_t)altitude,
-					.speed = speed,
-					.bearing = heading,
-				},
-			.info =
-				{
-					.fix_quality = GNSS_FIX_QUALITY_GNSS_SPS,
-					.fix_status = GNSS_FIX_STATUS_GNSS_FIX,
-				},
+			.nav_data = {
+				.latitude = latitude,
+				.longitude = longitude,
+				.altitude = (int32_t)altitude,
+				.speed = speed,
+				.bearing = heading,
+			},
+			.info = {
+				.fix_quality = GNSS_FIX_QUALITY_GNSS_SPS,
+				.fix_status = GNSS_FIX_STATUS_GNSS_FIX,
+			},
 		};
+		/* clang-format on */
 
 		if (parse_date_time_str(argv[7], &fix_data.utc) < 0) {
 			LOG_ERR("Failed to parse date time string");
@@ -2409,14 +2409,14 @@ static int offload_ioctl(void *obj, unsigned int request, va_list args)
 /*
  * Socket vtable.
  */
+/* clang-format off */
 static const struct socket_op_vtable offload_socket_fd_op_vtable = {
-	.fd_vtable =
-		{
-			.read = offload_read,
-			.write = offload_write,
-			.close = offload_close,
-			.ioctl = offload_ioctl,
-		},
+	.fd_vtable = {
+		.read = offload_read,
+		.write = offload_write,
+		.close = offload_close,
+		.ioctl = offload_ioctl,
+	},
 	.shutdown = NULL,
 	.bind = offload_bind,
 	.connect = offload_connect,
@@ -2430,6 +2430,7 @@ static const struct socket_op_vtable offload_socket_fd_op_vtable = {
 	.getpeername = NULL,
 	.getsockname = NULL,
 };
+/* clang-format on */
 
 /*
  * Reserve a socket FD and request a socket from the modem.
