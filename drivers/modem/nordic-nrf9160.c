@@ -2792,7 +2792,6 @@ static int modem_init(const struct device *dev)
 		.argv_size = ARRAY_SIZE(data->chat_argv),
 		.unsol_matches = unsol_matches,
 		.unsol_matches_size = ARRAY_SIZE(unsol_matches),
-		.process_timeout = K_MSEC(2),
 	};
 
 	rv = modem_chat_init(&data->chat, &chat_config);
