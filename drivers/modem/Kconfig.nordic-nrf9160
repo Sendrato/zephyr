@@ -1,7 +1,8 @@
-# Copyright (c) 2023 Sendrato B.V.
+#
+# Copyright (c) 2023 Sendrato
+#
 # SPDX-License-Identifier: Apache-2.0
-
-# Nordic nRf9160 driver options
+#
 
 config MODEM_NORDIC_NRF9160
 	bool "Nordic nRF9160 modem driver"

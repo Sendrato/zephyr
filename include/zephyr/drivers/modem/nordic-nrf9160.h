@@ -1,9 +1,11 @@
-/* SPDX-License-Identifier: Apache-2.0
- * Copyright (c) Sendrato B.V. 2023
+/*
+ * Copyright (c) 2023 Sendrato
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ZEPHYR_INCLUDE_DRIVERS_MODEM_NORDIC_NRF9160_H
-#define ZEPHYR_INCLUDE_DRIVERS_MODEM_NORDIC_NRF9160_H
+#ifndef ZEPHYR_INCLUDE_DRIVERS_MODEM_NORDIC_NRF9160_H_
+#define ZEPHYR_INCLUDE_DRIVERS_MODEM_NORDIC_NRF9160_H_
 
 #include <zephyr/types.h>
 
@@ -19,4 +21,4 @@ int mdm_nrf9160_reset(const struct device *dev);
 }
 #endif
 
-#endif /* ZEPHYR_INCLUDE_DRIVERS_MODEM_NORDIC_NRF9160_H */
+#endif /* ZEPHYR_INCLUDE_DRIVERS_MODEM_NORDIC_NRF9160_H_ */

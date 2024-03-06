@@ -1,5 +1,7 @@
-/* SPDX-License-Identifier: Apache-2.0
- * Copyright (c) 2023 Sendrato B.V.
+/*
+ * Copyright (c) 2023 Sendrato
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #include "nordic-nrf9160.h"

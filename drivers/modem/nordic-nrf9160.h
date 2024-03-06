@@ -1,9 +1,11 @@
-/* SPDX-License-Identifier: Apache-2.0
- * Copyright (c) 2023 Sendrato B.V.
+/*
+ * Copyright (c) 2023 Sendrato
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef MODEM_NRF9160_H
-#define MODEM_NRF9160_H
+#ifndef MODEM_NRF9160_H_
+#define MODEM_NRF9160_H_
 
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/modem/chat.h>
@@ -232,4 +234,4 @@ struct modem_config {
 	net_socket_create_t sock_create;
 };
 
-#endif /* MODEM_NRF9160_H */
+#endif /* MODEM_NRF9160_H_ */
