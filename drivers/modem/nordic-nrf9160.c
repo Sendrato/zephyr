@@ -155,6 +155,7 @@ int sprint_ip_addr(const struct sockaddr *addr, char *buf, size_t buf_size)
 				rv = -ENOMEM;
 			}
 		}
+
 	} else if (addr->sa_family == AF_INET) {
 		if (buf_size < NET_IPV4_ADDR_LEN) {
 			rv = -ENOMEM;
@@ -164,6 +165,7 @@ int sprint_ip_addr(const struct sockaddr *addr, char *buf, size_t buf_size)
 				rv = -ENOMEM;
 			}
 		}
+
 	} else {
 		LOG_ERR("Unknown IP address family:%d", addr->sa_family);
 
@@ -187,8 +189,10 @@ int get_addr_port(const struct sockaddr *addr, uint16_t *port)
 	} else {
 		if (addr->sa_family == AF_INET6) {
 			*port = ntohs(net_sin6(addr)->sin6_port);
+
 		} else if (addr->sa_family == AF_INET) {
 			*port = ntohs(net_sin(addr)->sin_port);
+
 		} else {
 			rv = -EPROTONOSUPPORT;
 		}
@@ -431,6 +435,7 @@ static void modem_ready_handler(struct modem_data *data, enum modem_event evt)
 	case MODEM_EVENT_SUSPEND:
 		modem_enter_state(data, MODEM_STATE_IDLE);
 		break;
+
 	case MODEM_EVENT_SCRIPT_SUCCESS:
 	case MODEM_EVENT_SCRIPT_FAILED:
 		LOG_DBG("Script %s", evt == MODEM_EVENT_SCRIPT_SUCCESS ? "success" : "failed");
@@ -447,6 +452,7 @@ static void modem_ready_handler(struct modem_data *data, enum modem_event evt)
 		/* Give script execution semaphore */
 		k_sem_give(&data->sem_script_exec);
 		break;
+
 	default:
 		LOG_DBG("%s got %d, not handled", __func__, evt);
 		break;
@@ -477,15 +483,18 @@ static void modem_init_handler(struct modem_data *data, enum modem_event evt)
 			LOG_ERR("Failed to run init script, error %d", rv);
 		}
 		break;
+
 	case MODEM_EVENT_SCRIPT_SUCCESS:
 		/* Give script done semaphore */
 		k_sem_give(&data->sem_script_done);
 		modem_enter_state(data, MODEM_STATE_READY);
 		break;
+
 	case MODEM_EVENT_SCRIPT_FAILED:
 	case MODEM_EVENT_SUSPEND:
 		modem_enter_state(data, MODEM_STATE_IDLE);
 		break;
+
 	default:
 		LOG_DBG("%s got %d, not handled", __func__, evt);
 		break;
@@ -560,9 +569,11 @@ static int modem_on_state_enter(struct modem_data *data)
 	case MODEM_STATE_IDLE:
 		rv = modem_idle_state_enter(data);
 		break;
+
 	case MODEM_STATE_INIT:
 		rv = modem_init_state_enter(data);
 		break;
+
 	default:
 		rv = 0;
 		break;
@@ -619,12 +630,15 @@ static void modem_event_handler(struct modem_data *data, enum modem_event evt)
 	case MODEM_STATE_IDLE:
 		modem_idle_handler(data, evt);
 		break;
+
 	case MODEM_STATE_INIT:
 		modem_init_handler(data, evt);
 		break;
+
 	case MODEM_STATE_READY:
 		modem_ready_handler(data, evt);
 		break;
+
 	default:
 		LOG_WRN("State %d not handled", data->state);
 		break;
@@ -688,45 +702,59 @@ static void modem_request_handler(struct modem_data *data, enum modem_request re
 		/* Run init script as it resets the modem before configuring it */
 		rv = modem_chat_run_script_async(&data->chat, config->init_chat_script);
 		break;
+
 	case MODEM_REQ_IFACE_ENABLE:
 		rv = do_iface_enable(data);
 		break;
+
 	case MODEM_REQ_IFACE_DISABLE:
 		rv = do_iface_disable(data);
 		break;
+
 	case MODEM_REQ_GNSS_RESUME:
 		rv = offload_gnss(data, true);
 		break;
+
 	case MODEM_REQ_GNSS_SUSPEND:
 		rv = offload_gnss(data, false);
 		break;
+
 	case MODEM_REQ_OPEN_SOCK:
 		rv = do_socket_open(data);
 		break;
+
 	case MODEM_REQ_CLOSE_SOCK:
 		rv = do_socket_close(data);
 		break;
+
 	case MODEM_REQ_CONNECT_SOCK:
 		rv = do_socket_connect(data);
 		break;
+
 	case MODEM_REQ_DATA_MODE:
 		rv = do_data_mode(data);
 		break;
+
 	case MODEM_REQ_SEND_DATA:
 		rv = do_socket_send(data);
 		break;
+
 	case MODEM_REQ_RECV_DATA:
 		rv = do_socket_recv(data);
 		break;
+
 	case MODEM_REQ_SELECT_SOCK:
 		rv = do_select_socket(data);
 		break;
+
 	case MODEM_REQ_GET_ACTIVE_SOCK:
 		rv = do_get_active_socket(data);
 		break;
+
 	case MODEM_REQ_GET_ADDRINFO:
 		rv = do_get_addrinfo(data);
 		break;
+
 	default:
 		LOG_DBG("%s got %d, not handled", __func__, req);
 		break;
@@ -843,12 +871,12 @@ static void modem_bus_pipe_handler(struct modem_pipe *pipe, enum modem_pipe_even
 	switch (event) {
 	case MODEM_PIPE_EVENT_OPENED:
 		modem_add_event(data, MODEM_EVENT_BUS_OPENED);
-
 		break;
+
 	case MODEM_PIPE_EVENT_CLOSED:
 		modem_add_event(data, MODEM_EVENT_BUS_CLOSED);
-
 		break;
+
 	default:
 		break;
 	}
@@ -973,9 +1001,11 @@ static void modem_chat_on_cereg(struct modem_chat *chat, char **argv, uint16_t a
 	if (argc == 2) {
 		/* Unsolicited notification */
 		status = ATOI(argv[1], -1, "reg_status");
+
 	} else if (argc == 3) {
 		/* Read command */
 		status = ATOI(argv[2], -1, "reg_status");
+
 	} else {
 		LOG_WRN("%s got %d args", __func__, argc);
 	}
@@ -1038,12 +1068,12 @@ void modem_chat_on_xsocket(struct modem_chat *chat, char **argv, uint16_t argc, 
 	if (argc == 4) {
 		data->sock_fd = ATOI(argv[1], -1, "sock_fd");
 		LOG_DBG("Got socket fd %d", data->sock_fd);
-	} else if (argc == 3) {
-		int res = ATOI(argv[1], -1, "result");
 
-		if (res < 0) {
+	} else if (argc == 3) {
+		if (ATOI(argv[1], -1, "result") < 0) {
 			LOG_DBG("Socket closed successfully");
 		}
+
 	} else {
 		LOG_WRN("%s got %d args", __func__, argc);
 	}
@@ -1065,6 +1095,7 @@ void modem_chat_on_xsocketselect(struct modem_chat *chat, char **argv, uint16_t 
 		if (handle >= 0) {
 			data->sock_fd = handle;
 		}
+
 	} else if (argc == 8) {
 		/* Nothing to do here really, just log */
 		int handle = 0;
@@ -1073,6 +1104,7 @@ void modem_chat_on_xsocketselect(struct modem_chat *chat, char **argv, uint16_t 
 		if (handle >= 0) {
 			LOG_DBG("Socket %d exists", handle);
 		}
+
 	} else {
 		LOG_WRN("%s received %d args", __func__, argc);
 	}
@@ -1098,11 +1130,13 @@ void modem_chat_on_xconnect(struct modem_chat *chat, char **argv, uint16_t argc,
 			LOG_DBG("Disconnected");
 			sock->is_connected = false;
 			break;
+
 		case 1:
 			/* Connected */
 			LOG_DBG("Connected");
 			sock->is_connected = true;
 			break;
+
 		default:
 			LOG_WRN("Received unknown status from XCONNECT %d", status);
 			break;
@@ -1127,9 +1161,11 @@ void modem_chat_on_xdata(struct modem_chat *chat, char **argv, uint16_t argc, vo
 		LOG_ERR("Data mode error %d", rv);
 		/* Return the error */
 		data->send_sock.sent = rv;
+
 	} else if (rv == 0) {
 		/* Received 0, data mode successful */
 		LOG_DBG("Data mode success");
+
 	} else {
 		/* Received number of bytes sent */
 		data->send_sock.sent = rv;
@@ -1189,8 +1225,10 @@ void modem_chat_on_xrecvdata(struct modem_chat *chat, char **argv, uint16_t argc
 	LOG_DBG("%s got %d bytes", __func__, data_len);
 	if (data_len > 0U) {
 		LOG_HEXDUMP_DBG(argv[1], data_len, "Received bytes");
+
 	} else if (strlen(argv[1]) > 0U) {
 		LOG_HEXDUMP_DBG(argv[1], strlen(argv[1]), "Received bytes");
+
 	} else {
 		LOG_DBG("Can't log received data");
 	}
@@ -1264,6 +1302,7 @@ void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, voi
 		int status = ATOI(argv[2], -1, "status");
 
 		LOG_DBG("%s service:%d status:%d", __func__, service, status);
+
 	} else if (argc >= 7) {
 		uint32_t latitude = 0U;
 		uint32_t longitude = 0U;
@@ -1324,6 +1363,7 @@ void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, voi
 
 		/* Publish fix data */
 		gnss_publish_data(data->gnss_dev, &fix_data);
+
 	} else {
 		LOG_WRN("%s received %d args", __func__, argc);
 	}
@@ -2082,8 +2122,10 @@ static int offload_connect(void *obj, const struct sockaddr *addr, socklen_t add
 	(void)memcpy(&sock->dst, addr, sizeof(*addr));
 	if (addr->sa_family == AF_INET6) {
 		data->connect_sock.dst_port = ntohs(net_sin6(addr)->sin6_port);
+
 	} else if (addr->sa_family == AF_INET) {
 		data->connect_sock.dst_port = ntohs(net_sin(addr)->sin_port);
+
 	} else {
 		errno = EAFNOSUPPORT;
 		rv = -1;
@@ -2333,35 +2375,34 @@ static ssize_t offload_sendmsg(void *obj, const struct msghdr *msg, int flags)
 static int offload_ioctl(void *obj, unsigned int request, va_list args)
 {
 	int rv = 0;
+	struct zsock_pollfd *pfd;
+	struct k_poll_event **pev;
+	struct k_poll_event *pev_end;
 	struct modem_socket *sock = (struct modem_socket *)obj;
 	struct modem_data *data = sock->data;
 
 	switch (request) {
-	case ZFD_IOCTL_POLL_PREPARE: {
-		struct zsock_pollfd *pfd;
-		struct k_poll_event **pev;
-		struct k_poll_event *pev_end;
-
+	case ZFD_IOCTL_POLL_PREPARE:
 		pfd = va_arg(args, struct zsock_pollfd *);
 		pev = va_arg(args, struct k_poll_event **);
 		pev_end = va_arg(args, struct k_poll_event *);
 
 		rv = modem_socket_poll_prepare(&data->socket_config, obj, pfd, pev, pev_end);
-	} break;
-	case ZFD_IOCTL_POLL_UPDATE: {
-		struct zsock_pollfd *pfd;
-		struct k_poll_event **pev;
+		break;
 
+	case ZFD_IOCTL_POLL_UPDATE:
 		pfd = va_arg(args, struct zsock_pollfd *);
 		pev = va_arg(args, struct k_poll_event **);
 
 		rv = modem_socket_poll_update(obj, pfd, pev);
-	} break;
+		break;
+
 	default:
 		rv = -EINVAL;
 		errno = -rv;
 		break;
 	}
+
 	return rv;
 }
 
