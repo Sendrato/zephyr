@@ -26,49 +26,14 @@
 			compatible = "arm,cortex-m4";
 			reg = <0>;
             clock-frequency = <48000000>;
-            cpu-power-states = <&state0 &state1 &state2>;
 		};
 
-        //TODO: voor nu pas ik dingen aan in dit bestand, maar iets met een overlay is uiteindelijk mooier
-        power_states: power-states {
-        //    state0: state0 {
-        //        compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
-        //        power-state-name = "active";
-        //        min-residency-us = <10000>;
-        //        exit-latency-us = <100>;
-        //        substate-id=<0>;
-        //    };
+		/*
+		 * The contents of this child node are to be set in a .overlay file.
+		 * This is done to make sleep-configurations adjustable by the user.
+		 */
 
-            state0: state0 {
-                compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
-                power-state-name = "suspend-to-idle";
-                min-residency-us = <1000>;
-                exit-latency-us = <0>;
-                substate-id=<0>;
-
-            };
-
-            state1: state1 {
-                compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
-                power-state-name = "suspend-to-ram";
-                min-residency-us = <300>;
-                exit-latency-us = <50>; //from datasheet page 59
-                substate-id=<1>;
-                gpio-wakeup;
-                retain-ram-domain;
-           };
-
-            state2: state2 {
-                compatible = "sendrato,expanded-power-configs", "zephyr,power-state";
-                power-state-name = "suspend-to-ram";
-                min-residency-us = <500>;
-                exit-latency-us = <499>;
-                substate-id=<2>;
-                retain-ram-domain;
-                //timer-wakeup;
-                gpio-wakeup;
-                retain-radio-device;
-            };
+		power_states: power-states {
 
         };
     };
@@ -88,7 +53,8 @@
             sram0: memory@4000000 {
                 compatible = "mmio-sram";
                 reg = <0x04000000 DT_SIZE_K(88)>;
-            };
+
+			};
 
             sram1: memory@4020000 {
                 compatible = "zephyr,memory-region", "mmio-sram";

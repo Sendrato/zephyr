@@ -39,50 +39,6 @@ BUILD_ASSERT(DT_NODE_EXISTS(DT_PATH(cpus)),
 /* Check that all power states are consistent */
 DT_FOREACH_CHILD(DT_PATH(cpus), CHECK_POWER_STATES_CONSISTENCY)
 
-
-//struct qn9090_config {
-//    uint8_t state;
-//    uint8_t substate_id;
-//    pm_power_config_t config;
-//};
-///*
-//if(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false)){
-//config.pm_wakeup_src |= POWER_WAKEUPSRC_IO;
-//config.pm_wakeup_io |= 1 << BOARD_SW1_GPIO_PIN;
-//}
-//        if(DT_PROP_OR(NODE_ID_SUSTORAM, retain_radio_device, false)){
-//                config.pm_config |= PM_CFG_RADIO_RET;           //Behouden radio instellingen
-//            }
-//*/
-//
-//#define PM_STATE_INFO_DT_INIT2(node_id)					       \
-//	{								       \
-//		.state = PM_STATE_DT_INIT(node_id),			       \
-//		.substate_id = DT_PROP_OR(node_id, substate_id, 0),	       \
-//		.config.pm_config = (COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, retain_radio_device, false), PM_CFG_RADIO_RET, 0)),\
-//		.config.pm_wakeup_src = (COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false), POWER_WAKEUPSRC_IO, 0) \
-//                                 | COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false), POWER_WAKEUPSRC_IO, 0)   \
-//                                 | COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false), POWER_WAKEUPSRC_IO, 0)),\
-//		.config.pm_wakeup_io = (COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false), 1 << BOARD_SW1_GPIO_PIN, 0) \
-//                                 | COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false), POWER_WAKEUPSRC_IO, 0)   \
-//                                 | COND_CODE_1(DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false), POWER_WAKEUPSRC_IO, 0)),\
-//                                 }
-//
-//#define Z_PM_STATE_INFO_FROM_DT_CPU2(i, node_id)                                                   \
-//	COND_CODE_1(DT_NODE_HAS_STATUS(DT_PHANDLE_BY_IDX(node_id, cpu_power_states, i), okay),    \
-//		    (PM_STATE_INFO_DT_INIT2(DT_PHANDLE_BY_IDX(node_id, cpu_power_states, i)),), ())
-//
-//
-//#define PM_STATE_INFO_LIST_FROM_DT_CPU2(node_id)				       \
-//	{								       \
-//		LISTIFY(DT_PROP_LEN_OR(node_id, cpu_power_states, 0),	       \
-//			Z_PM_STATE_INFO_FROM_DT_CPU2, (), node_id)	       \
-//	}
-//
-//#define DEFINE_CPU_STATES(n) \
-//	static const struct qn9090_config qn9090_config_##n[] \
-//		= PM_STATE_INFO_LIST_FROM_DT_CPU2(n);
-//#define CPU_STATE_REF(n) pmstates_##n
 /**
  * @brief Check CPU power states consistency
  *
