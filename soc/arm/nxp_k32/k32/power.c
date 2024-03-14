@@ -1,214 +1,227 @@
+#include <zephyr/arch/common/pm_s2ram.h>
 #include <zephyr/kernel.h>
-
-#include <zephyr/pm/pm.h>
-#include <device_power.h>
-
-#include <fsl_wtimer.h>
-#include <rom_api.h>
-
 #include <zephyr/logging/log.h>
-//LOG_MODULE_DECLARE(soc, CONFIG_SOC_LOG_LEVEL);
+#include <zephyr/pm/pm.h>
 
-#define BUTTON 0
-#define TIMER 1
-#define BUTTON_TIMER 2
-uint32_t irq_lock_key;
+#include <fsl_power.h>
+#include <board.h>
+#include <rom_api.h>
+#include <fsl_clock.h>
 
-extern uint32_t                   _end_boot_resume_stack;
-#define RESUME_STACK_POINTER      ((uint32_t)&_end_boot_resume_stack)
-#define PWR_JUMP_BUF_SIZE         10
+/*
+ * Struct for storing all power-management information relating to a single given state.
+ * This struct is passed to low-level API's to set configs.
+ */
 
-typedef unsigned long PWR_Register;
-typedef PWR_Register PWR_jmp_buf[PWR_JUMP_BUF_SIZE];
-PWR_jmp_buf                   pwr_CPUContext;
-
-#define CONFIG_SUBSTATE_TEST 1
-
-#if CONFIG_SUBSTATE_TEST
-
-struct qn9090_config {
+struct qn9090_pm_config {
     uint8_t state;
     uint8_t substate_id;
     pm_power_config_t config;
 };
 
-#define PM_STATE_INFO_DT_INIT2(node_id)					       \
-                                                  \
-        {                                       \
-        .state = PM_STATE_DT_INIT(node_id),                   \
-        .substate_id = DT_PROP_OR(node_id, substate_id, 0),           \
-        .config.pm_config = (COND_CODE_1(DT_PROP_OR(node_id, retain_radio_device, false), (PM_CFG_RADIO_RET), (0)) \
-                            |COND_CODE_1(DT_PROP_OR(node_id, retain_ram_domain, false), (PM_CFG_SRAM_ALL_RETENTION), (0))),\
-        .config.pm_wakeup_src = (COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false), (POWER_WAKEUPSRC_IO), (0)) \
-                                 | COND_CODE_1(DT_PROP_OR(node_id, timer_wakeup, false), (POWER_WAKEUPSRC_WAKE_UP_TIMER0), (0))),\
-        .config.pm_wakeup_io = (COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false), (1 << BOARD_SW1_GPIO_PIN), (0)) \
-                                 | COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false), (1 << BOARD_SW1_GPIO_PIN), (0))   \
-                                 | COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false), (1 << BOARD_SW1_GPIO_PIN), (0)))\
-                                 }
+/*
+ * Reads and sets the properties, which describe sleep-configurations
+ * set in the .overlay file of the compiled devicetree as struct members.
+ */
 
+#define PM_STATE_INFO_DT_INIT2(node_id)					\
+									\
+	{								\
+	.state = PM_STATE_DT_INIT(node_id),				\
+	.substate_id = DT_PROP_OR(node_id, substate_id, 0),		\
+	.config.pm_config =						\
+	(COND_CODE_1(DT_PROP_OR(node_id, retain_radio_device, false),	\
+	(PM_CFG_RADIO_RET), (0))|					\
+	COND_CODE_1(DT_PROP_OR(node_id, retain_radio_device, false),	\
+	(PM_CFG_XTAL32M_AUTOSTART), (0))|				\
+	COND_CODE_1(DT_PROP_OR(node_id, retain_ram_domain, false),	\
+	(PM_CFG_SRAM_ALL_RETENTION), (0))),				\
+	.config.pm_wakeup_src =						\
+	(COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false),		\
+	(POWER_WAKEUPSRC_IO), (0))|					\
+	COND_CODE_1(DT_PROP_OR(node_id, timer_wakeup, false),		\
+	(POWER_WAKEUPSRC_WAKE_UP_TIMER0), (0))),			\
+	.config.pm_wakeup_io =						\
+	(COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false),		\
+	(1 << BOARD_SW1_GPIO_PIN), (0))					\
+	|COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false),		\
+	(1 << BOARD_SW1_GPIO_PIN), (0))					\
+	|COND_CODE_1(DT_PROP_OR(node_id, gpio_wakeup, false),		\
+	(1 << BOARD_SW1_GPIO_PIN), (0)))				\
+	}
 
 
 #define POWER_LABEL DT_NODELABEL(power_states)
-static const struct qn9090_config qn9090_config[] = { DT_FOREACH_CHILD_SEP(POWER_LABEL, PM_STATE_INFO_DT_INIT2, (,))};
 
-#else
+/*
+ * The macro DT_FOREACH_CHILD_SEP parses the overlay file and invokes
+ * PM_STATE_INFO_DT_INIT2 with the DTS-id of each power state as an argument for each power state.
+ * The ID that corresponds to a power state is then used to parse the contents of each power state.
+ * These contents consist of properties corresponding with configurations
+ * for each power state, which are set in the .overlay file.
+ */
 
-#define NODE_ID_SUSTORAM DT_NODELABEL(state3)
+static struct qn9090_pm_config qn9090_pm_config[] = {
+	DT_FOREACH_CHILD_SEP(POWER_LABEL, PM_STATE_INFO_DT_INIT2, (,))};
 
-#endif
+/*
+ * Global variable used to specify a power state from the qn9090_pm_config
+ * struct array to pass to the low-level API. This is set by zephyr during runtime.
+ *
+ * This is required because the pm_s2ram API requires a wrapper
+ * function in which a config-array has to be passed.
+ * The variable is set during runtime and passed to the wrapper.
+ * For more information, read the comment below.
+ */
 
-#define UNUSED(x)
+int set_sleep_config;
+
+/*
+ * Separate function for sleep mode used in pm_s2ram API,
+ * because arch_pm_s2ram_suspend requires as argument function with no arguments.
+ * The power_fsl API does require a function with arguments,
+ * so a wrapper function with no arguments is required.
+ */
+
+int PowerDownWrapper(void)
+{
+
+	int ret;
+
+	ret = POWER_EnterPowerMode(PM_POWER_DOWN, &qn9090_pm_config[set_sleep_config].config);
+
+	return ret;
+}
 
 __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 {
 
-    bool ret;
-    //irq_lock_key = irq_lock();
+	/*Converts the amount of ticks the kernel is scheduled to be idle for to microseconds*/
+	uint64_t idle_time_us = k_ticks_to_us_near64((uint64_t) _kernel.idle);
 
-    #if CONFIG_SUBSTATE_TEST
+	/*Converts idle time from microseconds to seconds*/
+	double idle_time_s = (double) idle_time_us / (double) 1000000;
 
-    //TODO: substate_id komt niet per se overeen met locatie in array
+	/*Reset the wakeup timer peripheral. This is required for proper operation. */
+	reset_wkt();
 
-    int max_state = 0;
-    //uint8_t state_count = 0 DT_FOREACH_CHILD_SEP(POWER_LABEL,UNUSED,+1); //zet gelijk aan hoeveelheid power modes (kernel bevat hier iets over?)
-    //__disable_irq();
+	/*substates start at 1, but config array starts at entry 0*/
+	set_sleep_config = substate_id - 1;
 
-    uint8_t state_count = DT_NUM_CPU_POWER_STATES(DT_PATH(cpus));
+	/*
+	 * Entering deep sleep or higher sets the system clock to 12mHz after wakeup,
+	 * so the clock needs to be restored, which will be done with save_clock
+	 */
 
+	/*TODO: Make it so the clock type is remembered instead of hard coding it as 48MHz*/
+	enum _clock_name save_clock = CLOCK_GetFreq(kCLOCK_MainClk);
 
-    while(1){
+	while (true) {
 
-        //TODO: failsafe if a state without substate is selected. Substate in config generation defaults to 0, but what happens in pm_next_state?
+		if (state == PM_STATE_RUNTIME_IDLE) {
 
-//        if(qn9090_config[state_count].state == state && qn9090_config[state_count].substate_id == substate_id){
-//            ret = POWER_EnterPowerMode(PM_POWER_DOWN, &qn9090_config[state_count].config);
-//        }
+			/*
+			 * Save BASEPRI for later restoration and set it to 0,
+			 * so that an interrupt of any priority can wake the system
+			 */
 
-        if((state == PM_STATE_SUSPEND_TO_RAM || PM_STATE_SUSPEND_TO_DISK) && qn9090_config[state_count].substate_id == substate_id){
+			uint32_t basepri = __get_BASEPRI();
 
-            //BOOT_SetResumeStackPointer(RESUME_STACK_POINTER);
-            //SYSCON->CPSTACK = RESUME_STACK_POINTER;
-            if ( 0 == PWR_setjmp(pwr_CPUContext))
-            {
-                ret = POWER_EnterPowerMode(PM_POWER_DOWN, &qn9090_config[state_count].config);
-            }
+			__set_BASEPRI(0U);
 
-            break;
+			/*Enter sleep*/
+			POWER_EnterSleep();
 
-        }else if((state == PM_STATE_STANDBY || PM_STATE_SUSPEND_TO_IDLE) && qn9090_config[state_count].substate_id == substate_id){
-            ret = POWER_EnterPowerMode(PM_DEEP_SLEEP, &qn9090_config[state_count].config);
-            break;
+			/*
+			 * FIXME: causes _kernel.idle to overflow.
+			 * But I thought re enabling this was required?
+			 */
 
-        }else if(state == PM_STATE_RUNTIME_IDLE && qn9090_config[state_count].substate_id == substate_id) {
-            uint32_t basepri = __get_BASEPRI();
-            __set_BASEPRI(0);
-            POWER_EnterSleep();
-            __set_BASEPRI(basepri);
-            break;
-        }
+			/*__set_BASEPRI(basepri);*/
 
-        state_count++; //TODO: zorg dat terugtelt, maar ook dat geheugen niet fucky gaat omdat qn9090_config[n], n>child_n niet bestaat
-        //zorg ook dat while loop leaved, want nu is het oneindig
-    }
+			break;
 
+		} else if (state == PM_STATE_SUSPEND_TO_IDLE) {
 
+			/*
+			 * Save BASEPRI and set it to 0, so that an
+			 * interrupt of any priority can wake the system
+			 */
 
-//    switch (substate_id) {
-//
-//        //#define CASE_MACRO(node_id) case DT_PROP(node_id, substate-id): break;
-//
-//        DT_FOREACH_CHILD_STATUS_OKAY_SEP(DT_PATH(cpus), CASE_MACRO, (,))
-//
+			uint32_t basepri = __get_BASEPRI();
 
-    #else
+			__set_BASEPRI(0U);
 
-    ARG_UNUSED(substate_id);
-    pm_power_config_t config = {};
+			/*Sets a time for the wakeup timer to cause an interrupt*/
 
-    switch (state) {
+			/*
+			 * TODO: If sleep times smaller than 30µs, or a resolution higher
+			 * than that are required: use a higher frequency
+			 * clock for the wakeup timer.
+			 */
 
-        case PM_STATE_ACTIVE:
+			init_config_timer(idle_time_s);
 
-            break;
-        case PM_STATE_RUNTIME_IDLE:
+			/*Enter sleep and restore BASEPRI afterwards*/
+			bool ret = POWER_EnterPowerMode(PM_DEEP_SLEEP,
+				&qn9090_pm_config[set_sleep_config].config);
 
-            break;
-        case PM_STATE_SUSPEND_TO_IDLE:
+			/*
+			 * Variable ret is part of the API, and should
+			 * return false if system couldn't go into sleep mode.
+			 * Can be used for debugging.
+			 */
 
-            break;
-        case PM_STATE_STANDBY:
+			ARG_UNUSED(ret);
 
-            break;
-        case PM_STATE_SUSPEND_TO_RAM:
+			/*
+			 * FIXME: causes _kernel.idle to overflow.
+			 * But I thought re enabling this was required?
+			 */
 
-            if (DT_PROP_OR(NODE_ID_SUSTORAM, retain_ram_domain, false)) {
-                config.pm_config |= PM_CFG_SRAM_ALL_RETENTION;
-            }
-            if (DT_PROP_OR(NODE_ID_SUSTORAM, retain_radio_device, false)) {
-                config.pm_config |= PM_CFG_RADIO_RET;           //Behouden radio instellingen
-            }
-            if (DT_PROP_OR(NODE_ID_SUSTORAM, gpio_wakeup, false)) {
-                config.pm_wakeup_src |= POWER_WAKEUPSRC_IO;
-                config.pm_wakeup_io |= 1 << BOARD_SW1_GPIO_PIN;
-            }
-            if (DT_PROP_OR(NODE_ID_SUSTORAM, timer_wakeup, false)) {
-                config.pm_wakeup_src |= POWER_WAKEUPSRC_WAKE_UP_TIMER0;
-            }
+			/*__set_BASEPRI(basepri);*/
 
-            ret = POWER_EnterPowerMode(PM_POWER_DOWN, &config);
-            break;
+			/* will vector to ISR here once if PRIMASK = 0 before sleep call*/
 
-        case PM_STATE_SOFT_OFF:
+			/*
+			 * After wakeup from sleep, a 12 mHz clock is set
+			 * as the main system clock.
+			 * The two functions below restore it to its previous state.
+			 */
 
-            break;
-        default:
-            //LOG_DBG("Unsupported power state %u", state);
-            //printk("\r\n!!Unsupported power state!!\r\n\r\n");
-            //printk("Unsupported power state %u", state);
-            break;
+			CLOCK_AttachClk(kFRO48M_to_MAIN_CLK);
+			CLOCK_AttachClk(kMAIN_CLK_to_ASYNC_APB);
 
-    }
-    #endif
+			break;
+
+		} else if (state == PM_STATE_SUSPEND_TO_RAM) {
+
+			/*
+			 * TODO: Implementable when zephyr supports
+			 * context restoration for armv7-m archs.
+			 * This mode seems to break debugging so it's a challenge.
+			 */
+
+			break;
+
+			init_config_timer(idle_time_s);
+
+			arch_pm_s2ram_suspend(PowerDownWrapper);
+
+			CLOCK_AttachClk(kFRO48M_to_MAIN_CLK);
+			CLOCK_AttachClk(kMAIN_CLK_to_ASYNC_APB);
+
+		} else {
+			break;
+		}
+	}
 }
-
 
 __weak void pm_state_exit_post_ops(enum pm_state state, uint8_t substate_id)
 {
-    ARG_UNUSED(substate_id);
-    //irq_unlock(irq_lock_key);
+	ARG_UNUSED(state);
+	ARG_UNUSED(substate_id);
 
-    switch (state) {
-        case PM_STATE_ACTIVE:
-
-      //      printk("Exiting PM_STATE_ACTIVE\n");
-            break;
-        case PM_STATE_RUNTIME_IDLE:
-        //    printk("Exiting PM_STATE_RUNTIME_IDLE\n");
-            break;
-
-        case PM_STATE_STANDBY:
-
-          //  printk("Exiting PM_STATE_STANDBY\n");
-            break;
-
-        case PM_STATE_SOFT_OFF:
-
-            break;
-        default:
-            //LOG_DBG("Unsupported power state %u", state);
-            //printk("Unsupported power state %u", state);
-            break;
-    }
-
-
-    //irq_unlock(0); //System is now in active mode. Reenable interrupts which were disabled when OS started idling code.
-    irq_unlock(irq_lock_key);
-    //printk("Exiting post pm ops, ints reenabled\n");
-}
-
-void WarmMain(void)
-{
-    __disable_irq();
-    PWR_longjmp(pwr_CPUContext, 1); //voor context restoration. zoek uit waar dit moet. Mogelijk in warmmain
-    printk("\n!!warmmain called!!\n");
+	/*uninits wakeup timer*/
+	deinit_config_timer();
 }
