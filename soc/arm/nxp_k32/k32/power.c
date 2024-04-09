@@ -184,7 +184,6 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 			break;
 
 		/*
-		 *
 		 *TODO: Implementable state when zephyr supports
 		 * context restoration for armv7-m archs.
 		 * This mode seems to break debugging so it's a challenge.
