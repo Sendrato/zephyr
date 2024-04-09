@@ -116,39 +116,34 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 	/*TODO: Make it so the clock type is remembered instead of hard coding it as 48MHz*/
 	enum _clock_name save_clock = CLOCK_GetFreq(kCLOCK_MainClk);
 
+	//TODO: remove while loop. Test basepri before resulthing if. irq_unlock(0) ipv __set_BASEPRI(0)
+
 	while (true) {
 
 		if (state == PM_STATE_RUNTIME_IDLE) {
 
 			/*
-			 * Save BASEPRI for later restoration and set it to 0,
-			 * so that an interrupt of any priority can wake the system
+			 * Set BASEPRI to 0 so that an interrupt of any priority
+			 * can wake the system. BASEPRI should be kept at this
+			 * value in this function, as interrupts need to be
+			 * enabled when it exits as described in idle.c line 78.
 			 */
-
-			uint32_t basepri = __get_BASEPRI();
 
 			__set_BASEPRI(0U);
 
 			/*Enter sleep*/
 			POWER_EnterSleep();
 
-			/*
-			 * FIXME: causes _kernel.idle to overflow.
-			 * But I thought re enabling this was required?
-			 */
-
-			/*__set_BASEPRI(basepri);*/
-
 			break;
 
 		} else if (state == PM_STATE_SUSPEND_TO_IDLE) {
 
 			/*
-			 * Save BASEPRI and set it to 0, so that an
-			 * interrupt of any priority can wake the system
+			 * Set BASEPRI to 0 so that an interrupt of any priority
+			 * can wake the system. BASEPRI should be kept at this
+			 * value in this function, as interrupts need to be
+			 * enabled when it exits as described in idle.c line 78.
 			 */
-
-			uint32_t basepri = __get_BASEPRI();
 
 			__set_BASEPRI(0U);
 
@@ -174,12 +169,6 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 
 			ARG_UNUSED(ret);
 
-			/*
-			 * FIXME: causes _kernel.idle to overflow.
-			 * But I thought re enabling this was required?
-			 */
-
-			/*__set_BASEPRI(basepri);*/
 
 			/* will vector to ISR here once if PRIMASK = 0 before sleep call*/
 
@@ -194,13 +183,15 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 
 			break;
 
-		} else if (state == PM_STATE_SUSPEND_TO_RAM) {
+		/*
+		 *
+		 *TODO: Implementable state when zephyr supports
+		 * context restoration for armv7-m archs.
+		 * This mode seems to break debugging so it's a challenge.
+		 */
 
-			/*
-			 * TODO: Implementable when zephyr supports
-			 * context restoration for armv7-m archs.
-			 * This mode seems to break debugging so it's a challenge.
-			 */
+		/*
+		} else if (state == PM_STATE_SUSPEND_TO_RAM) {
 
 			break;
 
@@ -213,6 +204,7 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 
 		} else {
 			break;
+		*/
 		}
 	}
 }
