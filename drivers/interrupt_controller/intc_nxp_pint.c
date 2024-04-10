@@ -100,6 +100,10 @@ int nxp_pint_pin_enable(uint8_t pin, enum nxp_pint_trigger trigger, bool wake)
 	} else {
 		DisableDeepSleepIRQ(pint_irq_cfg[slot].irq);
 	}
+
+#if (defined(CONFIG_SOC_SERIES_K32))
+	NVIC_EnableIRQ(pint_irq_cfg[slot].irq);
+#endif /* SOC_SERIES_K32 */
 #endif
 	return 0;
 }
