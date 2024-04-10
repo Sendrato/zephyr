@@ -99,10 +99,12 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 	/*Converts the amount of ticks the kernel is scheduled to be idle for to microseconds*/
 	uint64_t idle_time_us = k_ticks_to_us_near64((uint64_t) _kernel.idle);
 
+	printk("\n Kernel will be idle for: %d \n", _kernel.idle);
+
 	/*Converts idle time from microseconds to seconds*/
 	double idle_time_s = (double) idle_time_us / (double) 1000000;
 
-	/*Reset the wakeup timer peripheral. This is required for proper operation. */
+	/*Reset the wakeup timer peripheral. This is required for proper operation.*/
 	reset_wkt();
 
 	/*substates start at 1, but config array starts at entry 0*/
@@ -116,72 +118,58 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 	/*TODO: Make it so the clock type is remembered instead of hard coding it as 48MHz*/
 	enum _clock_name save_clock = CLOCK_GetFreq(kCLOCK_MainClk);
 
-	//TODO: remove while loop. Test basepri before resulthing if. irq_unlock(0) ipv __set_BASEPRI(0)
+	/*
+	* Set BASEPRI to 0 so that an interrupt of any priority
+	* can wake the system. BASEPRI should be kept at this
+	* value in this function, as interrupts need to be
+	* enabled when it exits as described in idle.c line 78.
+	*/
 
-	while (true) {
+	__disable_irq();
+	uint8_t basepri = __get_BASEPRI();
+	__set_BASEPRI(0U);
 
-		if (state == PM_STATE_RUNTIME_IDLE) {
+	if (state == PM_STATE_RUNTIME_IDLE) {
 
-			/*
-			 * Set BASEPRI to 0 so that an interrupt of any priority
-			 * can wake the system. BASEPRI should be kept at this
-			 * value in this function, as interrupts need to be
-			 * enabled when it exits as described in idle.c line 78.
-			 */
+		/*Enter sleep*/
+		POWER_EnterSleep();
 
-			__set_BASEPRI(0U);
+	} else if (state == PM_STATE_SUSPEND_TO_IDLE) {
 
-			/*Enter sleep*/
-			POWER_EnterSleep();
+		/*Sets a time for the wakeup timer to cause an interrupt*/
 
-			break;
+		/*
+		 * TODO: If sleep times smaller than 30µs, or a resolution higher
+		 * than that are required: use a higher frequency
+		 * clock for the wakeup timer.
+		 */
 
-		} else if (state == PM_STATE_SUSPEND_TO_IDLE) {
+		init_config_timer(idle_time_s);
 
-			/*
-			 * Set BASEPRI to 0 so that an interrupt of any priority
-			 * can wake the system. BASEPRI should be kept at this
-			 * value in this function, as interrupts need to be
-			 * enabled when it exits as described in idle.c line 78.
-			 */
+		/*Enter sleep and restore BASEPRI afterwards*/
+		bool ret = POWER_EnterPowerMode(PM_DEEP_SLEEP,
+			&qn9090_pm_config[set_sleep_config].config);
 
-			__set_BASEPRI(0U);
+		/*
+		 * Variable ret is part of the API, and should
+		 * return false if system couldn't go into sleep mode.
+		 * Can be used for debugging.
+		 */
 
-			/*Sets a time for the wakeup timer to cause an interrupt*/
-
-			/*
-			 * TODO: If sleep times smaller than 30µs, or a resolution higher
-			 * than that are required: use a higher frequency
-			 * clock for the wakeup timer.
-			 */
-
-			init_config_timer(idle_time_s);
-
-			/*Enter sleep and restore BASEPRI afterwards*/
-			bool ret = POWER_EnterPowerMode(PM_DEEP_SLEEP,
-				&qn9090_pm_config[set_sleep_config].config);
-
-			/*
-			 * Variable ret is part of the API, and should
-			 * return false if system couldn't go into sleep mode.
-			 * Can be used for debugging.
-			 */
-
-			ARG_UNUSED(ret);
+		ARG_UNUSED(ret);
 
 
-			/* will vector to ISR here once if PRIMASK = 0 before sleep call*/
+		/* will vector to ISR here once if PRIMASK = 0 before sleep call*/
 
-			/*
-			 * After wakeup from sleep, a 12 mHz clock is set
-			 * as the main system clock.
-			 * The two functions below restore it to its previous state.
-			 */
+		/*
+		 * After wakeup from sleep, a 12 mHz clock is set
+		 * as the main system clock.
+		 * The two functions below restore it to its previous state.
+		 */
 
-			CLOCK_AttachClk(kFRO48M_to_MAIN_CLK);
-			CLOCK_AttachClk(kMAIN_CLK_to_ASYNC_APB);
+		CLOCK_AttachClk(kFRO48M_to_MAIN_CLK);
+		CLOCK_AttachClk(kMAIN_CLK_to_ASYNC_APB);
 
-			break;
 
 		/*
 		 *TODO: Implementable state when zephyr supports
@@ -204,8 +192,8 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 		} else {
 			break;
 		*/
-		}
 	}
+	__set_BASEPRI(basepri);
 }
 
 __weak void pm_state_exit_post_ops(enum pm_state state, uint8_t substate_id)
@@ -215,4 +203,8 @@ __weak void pm_state_exit_post_ops(enum pm_state state, uint8_t substate_id)
 
 	/*uninits wakeup timer*/
 	deinit_config_timer();
+	SCB->SCR=0;
+
+	__enable_irq();
+	irq_unlock(0);
 }

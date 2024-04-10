@@ -41,7 +41,7 @@ void idle(void *unused1, void *unused2, void *unused3)
 
 	__ASSERT_NO_MSG(_current->base.prio >= 0);
 
-    //LOG_PRINTK("TEST"); print test, maar breakpoint werkt niet..?
+	__asm volatile("nop");
 
 	while (true) {
 		/* SMP systems without a working IPI can't actual
