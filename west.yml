@@ -194,7 +194,7 @@ manifest:
         - hal
     - name: hal_nxp
       url: https://github.com/Sendrato/hal_nxp.git
-      revision: master-20230929-qn9090-v2.6.12
+      revision: master-20230929-qn9090-v2.6.12-deepsleep
       path: modules/hal/nxp
       groups:
         - hal

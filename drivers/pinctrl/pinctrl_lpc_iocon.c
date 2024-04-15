@@ -37,7 +37,7 @@ int pinctrl_configure_pins(const pinctrl_soc_pin_t *pins, uint8_t pin_cnt,
 			pin_mux &= Z_PINCTRL_IOCON_I_PIN_MASK;
 			break;
 		case IOCON_TYPE_A:
-			pin_mux &= Z_PINCTRL_IOCON_A_PIN_MASK;
+			//pin_mux &= Z_PINCTRL_IOCON_A_PIN_MASK;
 			break;
 		default:
 			/* Should not occur */
