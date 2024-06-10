@@ -257,5 +257,11 @@ config BT_NXP_FIXED_MAC_ADDR
 		6-byte hexadecimal address, eg: 0xffaa01610401.
 		Value is split in a  a hex-array by k32 driver-system.
 
+config BT_NXP_RANDOM_MAC_ADDR
+	bool "Random BT-MAC address of k32 soc"
+	default n
+	help
+		Randomly generated BT MAC address
+
 endif # SOC_FAMILY_K32
 endif # BT_NXP_IPM
