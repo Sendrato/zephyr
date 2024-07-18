@@ -12,6 +12,7 @@
 #include <dt-bindings/i2c/i2c.h>
 
 / {
+
 	chosen {
 		zephyr,flash-controller = &iap;
 	};
@@ -24,9 +25,18 @@
 			device_type = "cpu";
 			compatible = "arm,cortex-m4";
 			reg = <0>;
-			clock-frequency = <48000000>;
+            clock-frequency = <48000000>;
 		};
-	};
+
+		/*
+		 * The contents of this child node are to be set in a .overlay file.
+		 * This is done to make sleep-configurations adjustable by the user.
+		 */
+
+		power_states: power-states {
+
+        };
+    };
 
 	soc {
 
@@ -36,21 +46,21 @@
 			#clock-cells = <1>;
 		};
 
-		sram {
-			#address-cells = <1>;
-			#size-cells = <1>;
+        sram {
+            #address-cells = <1>;
+            #size-cells = <1>;
 
-			sram0: memory@4000000 {
-				compatible = "mmio-sram";
-				reg = <0x04000000 DT_SIZE_K(88)>;
+            sram0: memory@4000000 {
+                compatible = "mmio-sram";
+                reg = <0x04000000 DT_SIZE_K(88)>;
 			};
 
-			sram1: memory@4020000 {
-				compatible = "zephyr,memory-region", "mmio-sram";
-				reg = <0x04020000 DT_SIZE_K(64)>;
-				zephyr,memory-region = "SRAM1";
-			};
-		};
+            sram1: memory@4020000 {
+                compatible = "zephyr,memory-region", "mmio-sram";
+                reg = <0x04020000 DT_SIZE_K(64)>;
+                zephyr,memory-region = "SRAM1";
+            };
+        };
 
 		iap: flash-controller@40009000 {
 			compatible = "nxp,iap-k32";
@@ -65,40 +75,40 @@
 			};
 		};
 
-		iocon: iocon@4000F000 {
-			compatible = "nxp,lpc-iocon";
-			reg = <0x4000F000 0x58>;
-			#address-cells = <1>;
-			#size-cells = <1>;
-			ranges = <0x0 0x4000F000 0x58>;
-			pinctrl: pinctrl {
-				compatible = "nxp,k32-iocon-pinctrl";
-			};
-		};
+        iocon: iocon@4000F000 {
+            compatible = "nxp,lpc-iocon";
+            reg = <0x4000F000 0x58>;
+            #address-cells = <1>;
+            #size-cells = <1>;
+            ranges = <0x0 0x4000F000 0x58>;
+            pinctrl: pinctrl {
+                compatible = "nxp,lpc-iocon-pinctrl";
+            };
+        };
 
-		// GPIO, irq 4,5,6,7
+        // GPIO, irq 4,5,6,7
 		pint: pint@40080000 {
-			compatible = "nxp,pint";
+            compatible = "nxp,pint";
 			reg = <0x40010000 0x1000>;
-			interrupt-controller;
-			#interrupt-cells = <1>;
-			#address-cells = <0>;
-			interrupts = <4 2>,<5 2>,<6 2>,<7 2>;
-			num-lines = <4>;
-			num-inputs = <32>;
+            interrupt-controller;
+            #interrupt-cells = <1>;
+            #address-cells = <0>;
+            interrupts = <4 2>,<5 2>,<6 2>,<7 2>;
+            num-lines = <4>;
+            num-inputs = <32>;
 		};
 
-		gpio0: gpio@0 {
-			compatible = "nxp,lpc-gpio";
-			reg = <0x40080000 0x2488>;
-			int-source = "pint";
-			gpio-controller;
-			#gpio-cells = <2>;
-			port = <0>;
-		};
+        gpio0: gpio@0 {
+            compatible = "nxp,lpc-gpio";
+            reg = <0x40080000 0x2488>;
+            int-source = "pint";
+            gpio-controller;
+            #gpio-cells = <2>;
+            port = <0>;
+        };
 
 
-		// Flexcomm Interface 0 (USART0, FLEXCOMM0)
+        // Flexcomm Interface 0 (USART0, FLEXCOMM0)
 		flexcomm0: flexcomm@4008b000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x4008B000 0x1000>;
@@ -107,7 +117,7 @@
 			status = "disabled";
 		};
 
-		// Flexcomm Interface 1 (USART1, FLEXCOMM1)
+        // Flexcomm Interface 1 (USART1, FLEXCOMM1)
 		flexcomm1: flexcomm@4008c000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x4008C000 0x1000>;
@@ -116,7 +126,7 @@
 			status = "disabled";
 		};
 
-		// Flexcomm Interface 2 (I2C0, FLEXCOMM2)
+        // Flexcomm Interface 2 (I2C0, FLEXCOMM2)
 		flexcomm2: flexcomm@40003000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x40003000 0x1000>;
@@ -125,7 +135,7 @@
 			status = "disabled";
 		};
 
-		// Flexcomm Interface 3 (I2C1, FLEXCOMM3)
+        // Flexcomm Interface 3 (I2C1, FLEXCOMM3)
 		flexcomm3: flexcomm@40004000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x40004000 0x1000>;
@@ -134,7 +144,7 @@
 			status = "disabled";
 		};
 
-		// Flexcomm Interface 4 (SPI0, FLEXCOMM4)
+        // Flexcomm Interface 4 (SPI0, FLEXCOMM4)
 		flexcomm4: flexcomm@4008d000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x4008D000 0x1000>;
@@ -143,7 +153,7 @@
 			status = "disabled";
 		};
 
-		// Flexcomm Interface 5 (SPI1, FLEXCOMM)
+        // Flexcomm Interface 5 (SPI1, FLEXCOMM)
 		flexcomm5: flexcomm@4008e000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x4008E000 0x1000>;
@@ -152,7 +162,7 @@
 			status = "disabled";
 		};
 
-		// Flexcomm Interface6 (I2C2, FLEXCOMM6)
+        // Flexcomm Interface6 (I2C2, FLEXCOMM6)
 		flexcomm6: flexcomm@40005000 {
 			compatible = "nxp,lpc-flexcomm";
 			reg = <0x40005000 0x1000>;
@@ -161,11 +171,11 @@
 			status = "disabled";
 		};
 
-		rng: rng@4000D000 {
-			compatible = "nxp,lpc-rng";
-			reg = <0x4000D000 0x1000>;
-			status = "okay";
-		};
+        rng: rng@4000D000 {
+            compatible = "nxp,lpc-rng";
+            reg = <0x4000D000 0x1000>;
+            status = "okay";
+        };
 	};
 };
 

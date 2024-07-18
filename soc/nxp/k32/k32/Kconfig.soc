@@ -16,6 +16,7 @@ config SOC_SERIES
 config SOC_QN9090
 	bool
 	select SOC_SERIES_K32
+	select HAS_PM
 
 config SOC
 	default "qn9090" if SOC_QN9090

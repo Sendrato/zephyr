@@ -1,0 +1,34 @@
+description: qn9090 power management configuration for sleep modes
+
+#TODO: Could be changed to have a different yaml file for each power state so that available configs are shown per state.
+
+compatible: "sendrato,expanded-power-configs"
+
+include: zephyr,power-state.yaml
+
+properties:
+
+  gpio-wakeup:
+    type: boolean
+    required: false
+    description: bool to decide if wakeup source is GPIO
+
+  timer-wakeup:
+    type: boolean
+    required: false
+    description: bool to decide if wakeup source is timer
+
+  retain-ram-domain:
+    type: boolean
+    required: false
+    description: bool to decide if RAM should be retained between boots
+
+  retain-radio-device:
+    type: boolean
+    required: false
+    description: bool to decide if radio config should be retained between boots
+
+  autostart-32mhz-xtal:
+    type: boolean
+    required: false
+    description: bool to decide if 32mhz crystla should autostart on reboot. Might be required if this is system clock before sleep.

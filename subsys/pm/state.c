@@ -39,6 +39,14 @@ BUILD_ASSERT(DT_NODE_EXISTS(DT_PATH(cpus)),
 /* Check that all power states are consistent */
 DT_FOREACH_CHILD(DT_PATH(cpus), CHECK_POWER_STATES_CONSISTENCY)
 
+/**
+ * @brief Check CPU power states consistency
+ *
+ * All states should have a minimum residency >= than the exit latency.
+ *
+ * @param node_id A CPU node identifier.
+ */
+
 #define DEFINE_CPU_STATES(n) \
 	static const struct pm_state_info pmstates_##n[] \
 		= PM_STATE_INFO_LIST_FROM_DT_CPU(n);
