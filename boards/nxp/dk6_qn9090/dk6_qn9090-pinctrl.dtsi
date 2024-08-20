@@ -20,10 +20,10 @@
 			pinmux = <I2C0_SDA_PIO0_11>, <I2C0_SCL_PIO0_10>;
 			nxp,i2c-pin;
 			slew-rate = "standard";
-			nxp,i2c-mode;
-			nxp,i2c-speed = "slow";
-			nxp,i2c-pullup;
-			nxp,i2c-filter = "slow";
+			//nxp,i2c-mode;
+			//nxp,i2c-speed = "slow";
+			//nxp,i2c-pullup;
+			//nxp,i2c-filter = "slow";
 		};
 	};
 

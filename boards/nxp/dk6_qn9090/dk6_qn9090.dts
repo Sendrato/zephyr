@@ -82,7 +82,7 @@
 	 *  therefore it does not has internal ntag/nfc.
 	 * Instead, a nt3h2x11 is placed externally on the motherboard.
 	 * You need to check R58, R32, R50, R49, R45 and R59 for proper connection.
-	 *.
+	 */
 	nt3h2x11: nt3h2x11@55 {
 		compatible = "nxp,nt3h2x11";
 		reg = <0xd5>;
