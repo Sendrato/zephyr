@@ -132,8 +132,7 @@ static ALWAYS_INLINE void enable_internal_ntag(void)
  *
  * @return 0
  */
-
-static int nxp_k32_init(void)
+ int nxp_k32_init(void)
 {
 	/* old interrupt lock level */
 	unsigned int oldLevel;
