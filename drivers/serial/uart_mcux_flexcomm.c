@@ -19,6 +19,7 @@
 #include <soc.h>
 #include <fsl_device_registers.h>
 #include <zephyr/drivers/pinctrl.h>
+#include <zephyr/pm/device.h>
 #ifdef CONFIG_UART_ASYNC_API
 #include <zephyr/drivers/dma.h>
 #include <fsl_inputmux.h>
@@ -140,6 +141,11 @@ static int mcux_flexcomm_err_check(const struct device *dev)
 	return err;
 }
 
+static bool uart_mcux_flexcomm_suspended = false;
+static uint8_t uart_mcux_buf[100];
+static uint8_t uart_mcux_buf_len = 0;
+static uint8_t uart_mcux_buf_tx = 0;
+
 #ifdef CONFIG_UART_INTERRUPT_DRIVEN
 static int mcux_flexcomm_fifo_fill(const struct device *dev,
 				   const uint8_t *tx_data,
@@ -148,9 +154,28 @@ static int mcux_flexcomm_fifo_fill(const struct device *dev,
 	const struct mcux_flexcomm_config *config = dev->config;
 	uint8_t num_tx = 0U;
 
+	if (uart_mcux_flexcomm_suspended) {
+		memcpy(&uart_mcux_buf[uart_mcux_buf_len], tx_data, len);
+		uart_mcux_buf_len += len;
+		return len;
+	}
+
+	while ((uart_mcux_buf_len - uart_mcux_buf_tx > 0) &&
+	       (USART_GetStatusFlags(config->base) & kUSART_TxFifoNotFullFlag) &&
+	       !uart_mcux_flexcomm_suspended) {
+		USART_WriteByte(config->base, uart_mcux_buf[uart_mcux_buf_tx++]);
+	}
+
+	if (uart_mcux_buf_len != uart_mcux_buf_tx) {
+		return 0;
+	} else {
+		uart_mcux_buf_len = 0;
+		uart_mcux_buf_tx = 0;
+	}
+
 	while ((len - num_tx > 0) &&
-	       (USART_GetStatusFlags(config->base)
-		& kUSART_TxFifoNotFullFlag)) {
+	       (USART_GetStatusFlags(config->base) & kUSART_TxFifoNotFullFlag)
+	       && !uart_mcux_flexcomm_suspended) {
 
 		USART_WriteByte(config->base, tx_data[num_tx++]);
 	}
@@ -178,7 +203,7 @@ static void mcux_flexcomm_irq_tx_enable(const struct device *dev)
 {
 	const struct mcux_flexcomm_config *config = dev->config;
 	uint32_t mask = kUSART_TxLevelInterruptEnable;
-
+	pm_device_busy_set(dev);
 	USART_EnableInterrupts(config->base, mask);
 }
 
@@ -186,7 +211,7 @@ static void mcux_flexcomm_irq_tx_disable(const struct device *dev)
 {
 	const struct mcux_flexcomm_config *config = dev->config;
 	uint32_t mask = kUSART_TxLevelInterruptEnable;
-
+	pm_device_busy_clear(dev);
 	USART_DisableInterrupts(config->base, mask);
 }
 
@@ -1074,6 +1099,32 @@ static int mcux_flexcomm_init(const struct device *dev)
 	return 0;
 }
 
+#ifdef CONFIG_PM_DEVICE
+static int uart_mcux_flexcomm_pm_action(const struct device *dev, enum pm_device_action action)
+{
+	const struct mcux_flexcomm_config *config = dev->config;
+
+	switch (action) {
+	case PM_DEVICE_ACTION_RESUME:
+		clock_control_on(config->clock_dev, config->clock_subsys);
+		mcux_flexcomm_init(dev);
+		uart_mcux_flexcomm_suspended = false;
+		break;
+	case PM_DEVICE_ACTION_SUSPEND:
+		uart_mcux_flexcomm_suspended = true;
+		clock_control_off(config->clock_dev, config->clock_subsys);
+		break;
+	case PM_DEVICE_ACTION_TURN_OFF:
+		return 0;
+	case PM_DEVICE_ACTION_TURN_ON:
+		return 0;
+	default:
+		return -ENOTSUP;
+	}
+	return 0;
+}
+#endif /*CONFIG_PM_DEVICE*/
+
 static const struct uart_driver_api mcux_flexcomm_driver_api = {
 	.poll_in = mcux_flexcomm_poll_in,
 	.poll_out = mcux_flexcomm_poll_out,
@@ -1211,9 +1262,11 @@ static const struct mcux_flexcomm_config mcux_flexcomm_##n##_config = {		\
 										\
 	static const struct mcux_flexcomm_config mcux_flexcomm_##n##_config;	\
 										\
+	PM_DEVICE_DT_INST_DEFINE(n, uart_mcux_flexcomm_pm_action);           	\
+             									\
 	DEVICE_DT_INST_DEFINE(n,						\
 			    &mcux_flexcomm_init,				\
-			    NULL,						\
+			    PM_DEVICE_DT_INST_GET(n),				\
 			    &mcux_flexcomm_##n##_data,				\
 			    &mcux_flexcomm_##n##_config,			\
 			    PRE_KERNEL_1,					\

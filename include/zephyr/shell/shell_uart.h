@@ -89,7 +89,7 @@ struct shell_uart_polling {
  */
 #define SHELL_UART_DEFINE(_name, ...)                                                              \
 	static SHELL_UART_STRUCT _name##_shell_uart;                                               \
-	struct shell_transport _name = {                                                           \
+	const struct shell_transport _name = {                                                           \
 		.api = &shell_uart_transport_api,                                                  \
 		.ctx = (struct shell_telnet *)&_name##_shell_uart,                                 \
 	}
