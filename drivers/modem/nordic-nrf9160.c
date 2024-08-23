@@ -425,6 +425,27 @@ static void modem_connected_set(struct modem_data *data, bool connected)
 	k_sem_give(&data->sem_state);
 }
 
+/* Reset modem by pulling RESET pin low then high, if RESET pin is defined in DTS */
+static void modem_pin_reset(const struct device *dev)
+{
+	int rv = 0;
+	const struct modem_config *config = dev->config;
+
+	if (config->reset_gpio.port != NULL) {
+		/* Pull RESET pin LOW to power OFF modem */
+		rv = gpio_pin_configure_dt(&config->reset_gpio, GPIO_OUTPUT_INACTIVE);
+		if (rv < 0) {
+			LOG_ERR("Failed to set reset gpio to inactive, error %d", rv);
+		}
+
+		/* Pull RESET pin HIGH to power ON modem */
+		rv = gpio_pin_configure_dt(&config->reset_gpio, GPIO_OUTPUT_ACTIVE);
+		if (rv < 0) {
+			LOG_ERR("Failed to set reset gpio to active, error %d", rv);
+		}
+	}
+}
+
 /* ~~~~ Modem FSM functions ~~~~ */
 
 static void modem_ready_handler(struct modem_data *data, enum modem_event evt)
@@ -1381,11 +1402,17 @@ void modem_chat_on_pvt(struct modem_chat *chat, char **argv, uint16_t argc, void
 	LOG_DBG("%s", argv[1]);
 }
 
+void modem_chat_on_ready(struct modem_chat *chat, char **argv, uint16_t argc, void *user_data)
+{
+	LOG_DBG("~~~~ Modem ready ~~~~");
+}
+
 /* ~~~~ Modem chat matches ~~~~ */
 
 MODEM_CHAT_MATCH_DEFINE(ok_match, "OK", "", NULL);
 MODEM_CHAT_MATCHES_DEFINE(ready_match, MODEM_CHAT_MATCH_INITIALIZER("OK", "", NULL, false, true),
-			  MODEM_CHAT_MATCH_INITIALIZER("Ready", "", NULL, false, false));
+			  MODEM_CHAT_MATCH_INITIALIZER("Ready", "", modem_chat_on_ready, false,
+						       false));
 MODEM_CHAT_MATCHES_DEFINE(abort_matches, MODEM_CHAT_MATCH("ERROR", "", NULL));
 MODEM_CHAT_MATCHES_DEFINE(unsol_matches, MODEM_CHAT_MATCH("+CEREG: ", ",", modem_chat_on_cereg),
 			  MODEM_CHAT_MATCH("#XGPS: ", ",", modem_chat_on_xgps),
@@ -2801,12 +2828,8 @@ static int modem_init(const struct device *dev)
 		}
 	}
 
-	if (config->reset_gpio.port != NULL) {
-		rv = gpio_pin_configure_dt(&config->reset_gpio, GPIO_OUTPUT_ACTIVE);
-		if (rv < 0) {
-			LOG_ERR("Failed to configured reset gpio, error %d", rv);
-		}
-	}
+	/* Configure RESET pin, if defined */
+	modem_pin_reset(dev);
 
 	const struct modem_backend_uart_config uart_backend_config = {
 		.uart = config->uart,
@@ -2881,10 +2904,20 @@ int mdm_nrf9160_reset(const struct device *dev)
 	/* Make sure the modem is disconnected before resetting it */
 	modem_add_request(data, MODEM_REQ_IFACE_DISABLE);
 
+	/* Wait for semaphore to signal iface disabled*/
+	rv = wait_script_done(__func__, data, MDM_SCRIPT_DONE_TIMEOUT_SEC, 1U);
+	if (rv < 0) {
+		LOG_ERR("IFace disable operation timed out");
+		rv = -ETIMEDOUT;
+	}
+
+	/* If RESET pin is defined, physically reset the modem before running init script */
+	modem_pin_reset(dev);
+
 	modem_add_request(data, MODEM_REQ_RESET);
 
 	/* Wait for semaphore to signal init done */
-	rv = wait_script_done(__func__, data, MDM_RESET_TIMEOUT_SEC, 2U);
+	rv = wait_script_done(__func__, data, MDM_RESET_TIMEOUT_SEC, 1U);
 	if (rv < 0) {
 		LOG_ERR("Reset operation timed out");
 		rv = -ETIMEDOUT;
