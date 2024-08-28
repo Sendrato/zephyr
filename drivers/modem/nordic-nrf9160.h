@@ -19,6 +19,48 @@
 
 #include "modem_socket.h"
 
+/* Factory almanac generated on 2024-08-01 08:33:13.
+ *
+ * Note, that the almanac gets more inaccurate with time and it should be updated periodically.
+ */
+
+#define FACTORY_ALMANAC_DATA_V2                                                                    \
+	"f0ea020031150900000000000000000000000000000000000000000000000000"                         \
+	"00000000000000000000317a837b1509251049fd002d0da10041e32000d609d1"                         \
+	"ff54ae4c006afe020031e92e7b1509da1b4cfd001f0da100a22f4f000c502e00"                         \
+	"f0c1bbfffc01040031e6177b15093e0f6cfd00710da1005c1b7b00567a86ff49"                         \
+	"bd3700b501020031d2307b150952133ffd00d30ca100bb0e4d00c6fb340070c7"                         \
+	"520041ff00003124187b1509c21e54fd00ff0ca1001af42400c664e2ff3b2af6"                         \
+	"ff8100f9ff3117997b150913054dfd007c0ca1004357a4ff982baaff8c4cd1ff"                         \
+	"c3ff020031184e7b15097a065efd00f40ca100663cf8ff72fa0e00d62e45003b"                         \
+	"0104003117187b1509180b65fd00a40ca1005fa97800da225000033d59003901"                         \
+	"0400319d4d7b15099f1b4bfd00220da100f8144f00c9179fffd07d95ffa9fffd"                         \
+	"ff31920c7b15097a0f40fd009a0da100623d2600b1a696ff9881270012fdfeff"                         \
+	"31f3467b1509760c55fd00710ca100cfd1d1ff107b3b00ad71b3ffd7fdffff31"                         \
+	"e6447b1509751371fd00ef0ca100a9757f00045b2600f1853900bd020100311d"                         \
+	"277b1509950142fd00110da1001bf7cfff00478bffcc1eb0ffe601020031b082"                         \
+	"7b15090dfc4dfd001e0da100e3617300ab5a360074861d00c50001003165717b"                         \
+	"15091b0c54fd00500ca1006b8bd2ff9f3b22009e716b001aff030031116e7b15"                         \
+	"09cb106efd00db0da100c222fcffb280caff94234300b802feff317d247b1509"                         \
+	"e21447fd00760ca1009a142500cf6784ff137bf5ff5efdffff31f5517b150948"                         \
+	"106efd00780da10055f0fdff4e686a0085b892ff20020100314a1e7b1509d207"                         \
+	"2bfd00270ca10024c24700080897ff1d8b0500860100003118cf7b1509670c49"                         \
+	"fd00f50ca1001d9420008501eaff63e13d006e00ffff3153747b1509ac0b52fd"                         \
+	"00150da100cfadd2ffbc08d2ff588a5900cfffffff3195247b1509711845fd00"                         \
+	"6d0ca1001fe34d00182d87ffad65c4ff2e01020031c97f7b150984fa46fd0023"                         \
+	"0da100cf56a0ffac722800d72df9ff03fe000031565f7b15099b0446fd00860d"                         \
+	"a100a442ceff3b742c001c03b0ff0b02000031c1497b15090ef831fd00d90ca1"                         \
+	"0089a9cbffbf2b1600c13691ff7200feff31b7667b15095f0c67fd001e0da100"                         \
+	"5256f9ff7e862000f1494700deff0000318f027b1509520c58fd00120da10051"                         \
+	"06a3ffa97e3b00abbda1ff8afefcff31ce187b150965126dfd00250ca100d9c0"                         \
+	"fcff178e6b00e1b4430099fd010031da3a7b150964fb3efd00500ca1000153a4"                         \
+	"ffb3599cffc910cbff94fe02003143567b1509a40753fd009f0da100a33aa5ff"                         \
+	"a5941c00d69daaff13ff000031d93f7b15094c0d68fd00550da1008c44790097"                         \
+	"27a9ff1311620082fd0100000000000000000000000000000000000000000000"                         \
+	"0000000000"
+#define FACTORY_ALMANAC_CHECKSUM_V2                                                                \
+	"dc6e1ee50b4f0cec12f6ee1c039de4926accb054dd74e150db0e622638830b4d"
+
 #define MDM_INIT_SCRIPT_TIMEOUT_SECONDS  10
 #define MDM_DYNAMIC_SCRIPT_TIMEOUT_SEC   5
 #define MDM_RECV_DATA_SCRIPT_TIMEOUT_SEC 2
@@ -55,6 +97,8 @@
 #endif
 /* PDP context */
 #define MDM_SETUP_CMD_PDP_CTX "AT+CGDCONT=0,\"IP\",\"" CONFIG_MODEM_NRF9160_APN "\""
+#define MDM_SETUP_CMD_ALMANAC_DATA                                                                 \
+	"AT%XFILEWRITE=1,\"" FACTORY_ALMANAC_DATA_V2 "\",\"" FACTORY_ALMANAC_CHECKSUM_V2 "\""
 
 /* Default SLM data mode terminator command */
 #define MDM_DATA_MODE_TERMINATOR "!~>&}@%"
