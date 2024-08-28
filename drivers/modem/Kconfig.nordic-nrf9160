@@ -125,4 +125,22 @@ config MODEM_NRF9160_MODE_DUAL_LTE_PREF
 
 endchoice
 
+config MODEM_NRF9160_COEX0_CMD
+	string "Command used to configure COEX0 pin"
+	default "AT%XCOEX0"
+	help
+		Command used to configure COEX0 pin controlled by modem.
+		If COEX0 pin needs to be enabled, the config should
+		contain the whole command to be sent e.g.
+		"AT%XCOEX0=1,1,1570,1580"
+
+config MODEM_NRF9160_MAGPIO_CMD
+	string "Command used to configure MAGPIO pins"
+	default "AT%XMAGPIO"
+	help
+		Command used to configure MAGPIO pins controlled by modem.
+		If MAGPIO pins need to be enabled, the config should
+		contain the whole command to be sent e.g.
+		"AT%XMAGPIO=1,1,1,1,0,1574,1577"
+
 endif
