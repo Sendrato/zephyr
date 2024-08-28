@@ -506,9 +506,9 @@ static void modem_init_handler(struct modem_data *data, enum modem_event evt)
 		break;
 
 	case MODEM_EVENT_SCRIPT_SUCCESS:
+		modem_enter_state(data, MODEM_STATE_READY);
 		/* Give script done semaphore */
 		k_sem_give(&data->sem_script_done);
-		modem_enter_state(data, MODEM_STATE_READY);
 		break;
 
 	case MODEM_EVENT_SCRIPT_FAILED:
