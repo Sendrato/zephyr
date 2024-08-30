@@ -1481,14 +1481,6 @@ MODEM_CHAT_MATCHES_DEFINE(
 	MODEM_CHAT_MATCH_INITIALIZER("", "", modem_chat_on_xrecvdata, false, true),
 	MODEM_CHAT_MATCH_INITIALIZER("OK", "", NULL, false, false));
 /*
- * The response to the XGPS command is:
- * "OK": to signal correct execution of the command
- * "XGPS": to indicate status and service of GNSS
- */
-MODEM_CHAT_MATCHES_DEFINE(xgps_match, MODEM_CHAT_MATCH_INITIALIZER("OK", "", NULL, false, true),
-			  MODEM_CHAT_MATCH_INITIALIZER("#XGPS: ", ",", modem_chat_on_xgps, false,
-						       false));
-/*
  * The response to the XCONNECT command is:
  * "XCONNECT": reporting the connection status
  * "OK": to signal correct execution of the command
@@ -1561,10 +1553,10 @@ static int offload_gnss(struct modem_data *data, bool enable)
 
 	/*
 	 * Create dynamic match
-	 * Use statically defined one as multiple responses are expected
+	 * Expect OK, we don't care about the following XGPS command indicating the status
 	 */
-	data->dynamic_script_chat.response_matches = xgps_match;
-	data->dynamic_script_chat.response_matches_size = ARRAY_SIZE(xgps_match);
+	data->dynamic_script_chat.response_matches = &ok_match;
+	data->dynamic_script_chat.response_matches_size = 1u;
 
 	rv = modem_chat_run_script_async(&data->chat, &data->dynamic_script);
 	if (rv < 0) {
