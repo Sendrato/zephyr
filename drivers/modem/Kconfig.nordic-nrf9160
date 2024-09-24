@@ -143,4 +143,12 @@ config MODEM_NRF9160_MAGPIO_CMD
 		contain the whole command to be sent e.g.
 		"AT%XMAGPIO=1,1,1,1,0,1574,1577"
 
+config MODEM_NRF9160_EXTERNAL_ALMANAC
+	bool "External almanac data and data-checksum to be set to the modem"
+	help
+		External almanac data and data-checksum to be set to the modem.
+		If this config is enabled the driver expects to find two defines
+		FACTORY_ALMANAC_DATA_V2 and FACTORY_ALMANAC_DATA_CHECKSUM_V2 to
+		be sent to the modem to improve GNSS time to fix.
+
 endif
