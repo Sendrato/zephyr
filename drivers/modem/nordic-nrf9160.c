@@ -45,7 +45,9 @@ static int do_iface_enable(struct modem_data *data);
 
 static int do_iface_disable(struct modem_data *data);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
 static int offload_gnss(struct modem_data *data, bool enable);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 
 static int do_get_addrinfo(struct modem_data *data);
 
@@ -733,11 +735,15 @@ static void modem_request_handler(struct modem_data *data, enum modem_request re
 		break;
 
 	case MODEM_REQ_GNSS_RESUME:
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
 		rv = offload_gnss(data, true);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 		break;
 
 	case MODEM_REQ_GNSS_SUSPEND:
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
 		rv = offload_gnss(data, false);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 		break;
 
 	case MODEM_REQ_OPEN_SOCK:
@@ -1316,8 +1322,6 @@ void modem_chat_on_xrecvdata(struct modem_chat *chat, char **argv, uint16_t argc
  */
 void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, void *user_data)
 {
-	struct modem_data *data = chat->user_data;
-
 	if (argc == 3) {
 		int service = ATOI(argv[1], -1, "service");
 		int status = ATOI(argv[2], -1, "status");
@@ -1382,8 +1386,12 @@ void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, voi
 			LOG_ERR("Failed to parse date time string");
 		}
 
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
+		struct modem_data *data = chat->user_data;
+
 		/* Publish fix data */
 		gnss_publish_data(data->gnss_dev, &fix_data);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 
 	} else {
 		LOG_WRN("%s received %d args", __func__, argc);
