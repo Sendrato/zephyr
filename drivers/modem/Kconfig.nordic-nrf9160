@@ -125,4 +125,30 @@ config MODEM_NRF9160_MODE_DUAL_LTE_PREF
 
 endchoice
 
+config MODEM_NRF9160_COEX0_CMD
+	string "Command used to configure COEX0 pin"
+	default "AT%XCOEX0"
+	help
+		Command used to configure COEX0 pin controlled by modem.
+		If COEX0 pin needs to be enabled, the config should
+		contain the whole command to be sent e.g.
+		"AT%XCOEX0=1,1,1570,1580"
+
+config MODEM_NRF9160_MAGPIO_CMD
+	string "Command used to configure MAGPIO pins"
+	default "AT%XMAGPIO"
+	help
+		Command used to configure MAGPIO pins controlled by modem.
+		If MAGPIO pins need to be enabled, the config should
+		contain the whole command to be sent e.g.
+		"AT%XMAGPIO=1,1,1,1,0,1574,1577"
+
+config MODEM_NRF9160_EXTERNAL_ALMANAC
+	bool "External almanac data and data-checksum to be set to the modem"
+	help
+		External almanac data and data-checksum to be set to the modem.
+		If this config is enabled the driver expects to find two defines
+		FACTORY_ALMANAC_DATA_V2 and FACTORY_ALMANAC_DATA_CHECKSUM_V2 to
+		be sent to the modem to improve GNSS time to fix.
+
 endif

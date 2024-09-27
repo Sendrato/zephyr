@@ -45,7 +45,9 @@ static int do_iface_enable(struct modem_data *data);
 
 static int do_iface_disable(struct modem_data *data);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
 static int offload_gnss(struct modem_data *data, bool enable);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 
 static int do_get_addrinfo(struct modem_data *data);
 
@@ -425,6 +427,27 @@ static void modem_connected_set(struct modem_data *data, bool connected)
 	k_sem_give(&data->sem_state);
 }
 
+/* Reset modem by pulling RESET pin low then high, if RESET pin is defined in DTS */
+static void modem_pin_reset(const struct device *dev)
+{
+	int rv = 0;
+	const struct modem_config *config = dev->config;
+
+	if (config->reset_gpio.port != NULL) {
+		/* Pull RESET pin LOW to power OFF modem */
+		rv = gpio_pin_configure_dt(&config->reset_gpio, GPIO_OUTPUT_INACTIVE);
+		if (rv < 0) {
+			LOG_ERR("Failed to set reset gpio to inactive, error %d", rv);
+		}
+
+		/* Pull RESET pin HIGH to power ON modem */
+		rv = gpio_pin_configure_dt(&config->reset_gpio, GPIO_OUTPUT_ACTIVE);
+		if (rv < 0) {
+			LOG_ERR("Failed to set reset gpio to active, error %d", rv);
+		}
+	}
+}
+
 /* ~~~~ Modem FSM functions ~~~~ */
 
 static void modem_ready_handler(struct modem_data *data, enum modem_event evt)
@@ -485,9 +508,9 @@ static void modem_init_handler(struct modem_data *data, enum modem_event evt)
 		break;
 
 	case MODEM_EVENT_SCRIPT_SUCCESS:
+		modem_enter_state(data, MODEM_STATE_READY);
 		/* Give script done semaphore */
 		k_sem_give(&data->sem_script_done);
-		modem_enter_state(data, MODEM_STATE_READY);
 		break;
 
 	case MODEM_EVENT_SCRIPT_FAILED:
@@ -712,11 +735,15 @@ static void modem_request_handler(struct modem_data *data, enum modem_request re
 		break;
 
 	case MODEM_REQ_GNSS_RESUME:
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
 		rv = offload_gnss(data, true);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 		break;
 
 	case MODEM_REQ_GNSS_SUSPEND:
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
 		rv = offload_gnss(data, false);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 		break;
 
 	case MODEM_REQ_OPEN_SOCK:
@@ -1295,8 +1322,6 @@ void modem_chat_on_xrecvdata(struct modem_chat *chat, char **argv, uint16_t argc
  */
 void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, void *user_data)
 {
-	struct modem_data *data = chat->user_data;
-
 	if (argc == 3) {
 		int service = ATOI(argv[1], -1, "service");
 		int status = ATOI(argv[2], -1, "status");
@@ -1361,8 +1386,12 @@ void modem_chat_on_xgps(struct modem_chat *chat, char **argv, uint16_t argc, voi
 			LOG_ERR("Failed to parse date time string");
 		}
 
+#if DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss)
+		struct modem_data *data = chat->user_data;
+
 		/* Publish fix data */
 		gnss_publish_data(data->gnss_dev, &fix_data);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(nordic_nrf9160_gnss) */
 
 	} else {
 		LOG_WRN("%s received %d args", __func__, argc);
@@ -1381,11 +1410,17 @@ void modem_chat_on_pvt(struct modem_chat *chat, char **argv, uint16_t argc, void
 	LOG_DBG("%s", argv[1]);
 }
 
+void modem_chat_on_ready(struct modem_chat *chat, char **argv, uint16_t argc, void *user_data)
+{
+	LOG_DBG("~~~~ Modem ready ~~~~");
+}
+
 /* ~~~~ Modem chat matches ~~~~ */
 
 MODEM_CHAT_MATCH_DEFINE(ok_match, "OK", "", NULL);
 MODEM_CHAT_MATCHES_DEFINE(ready_match, MODEM_CHAT_MATCH_INITIALIZER("OK", "", NULL, false, true),
-			  MODEM_CHAT_MATCH_INITIALIZER("Ready", "", NULL, false, false));
+			  MODEM_CHAT_MATCH_INITIALIZER("Ready", "", modem_chat_on_ready, false,
+						       false));
 MODEM_CHAT_MATCHES_DEFINE(abort_matches, MODEM_CHAT_MATCH("ERROR", "", NULL));
 MODEM_CHAT_MATCHES_DEFINE(unsol_matches, MODEM_CHAT_MATCH("+CEREG: ", ",", modem_chat_on_cereg),
 			  MODEM_CHAT_MATCH("#XGPS: ", ",", modem_chat_on_xgps),
@@ -1453,14 +1488,6 @@ MODEM_CHAT_MATCHES_DEFINE(
 	MODEM_CHAT_MATCH_INITIALIZER("#XRECVFROM: ", ",", modem_chat_on_xrecvfrom, false, true),
 	MODEM_CHAT_MATCH_INITIALIZER("", "", modem_chat_on_xrecvdata, false, true),
 	MODEM_CHAT_MATCH_INITIALIZER("OK", "", NULL, false, false));
-/*
- * The response to the XGPS command is:
- * "OK": to signal correct execution of the command
- * "XGPS": to indicate status and service of GNSS
- */
-MODEM_CHAT_MATCHES_DEFINE(xgps_match, MODEM_CHAT_MATCH_INITIALIZER("OK", "", NULL, false, true),
-			  MODEM_CHAT_MATCH_INITIALIZER("#XGPS: ", ",", modem_chat_on_xgps, false,
-						       false));
 /*
  * The response to the XCONNECT command is:
  * "XCONNECT": reporting the connection status
@@ -1534,10 +1561,10 @@ static int offload_gnss(struct modem_data *data, bool enable)
 
 	/*
 	 * Create dynamic match
-	 * Use statically defined one as multiple responses are expected
+	 * Expect OK, we don't care about the following XGPS command indicating the status
 	 */
-	data->dynamic_script_chat.response_matches = xgps_match;
-	data->dynamic_script_chat.response_matches_size = ARRAY_SIZE(xgps_match);
+	data->dynamic_script_chat.response_matches = &ok_match;
+	data->dynamic_script_chat.response_matches_size = 1u;
 
 	rv = modem_chat_run_script_async(&data->chat, &data->dynamic_script);
 	if (rv < 0) {
@@ -2801,12 +2828,8 @@ static int modem_init(const struct device *dev)
 		}
 	}
 
-	if (config->reset_gpio.port != NULL) {
-		rv = gpio_pin_configure_dt(&config->reset_gpio, GPIO_OUTPUT_ACTIVE);
-		if (rv < 0) {
-			LOG_ERR("Failed to configured reset gpio, error %d", rv);
-		}
-	}
+	/* Configure RESET pin, if defined */
+	modem_pin_reset(dev);
 
 	const struct modem_backend_uart_config uart_backend_config = {
 		.uart = config->uart,
@@ -2881,10 +2904,20 @@ int mdm_nrf9160_reset(const struct device *dev)
 	/* Make sure the modem is disconnected before resetting it */
 	modem_add_request(data, MODEM_REQ_IFACE_DISABLE);
 
+	/* Wait for semaphore to signal iface disabled*/
+	rv = wait_script_done(__func__, data, MDM_SCRIPT_DONE_TIMEOUT_SEC, 1U);
+	if (rv < 0) {
+		LOG_ERR("IFace disable operation timed out");
+		rv = -ETIMEDOUT;
+	}
+
+	/* If RESET pin is defined, physically reset the modem before running init script */
+	modem_pin_reset(dev);
+
 	modem_add_request(data, MODEM_REQ_RESET);
 
 	/* Wait for semaphore to signal init done */
-	rv = wait_script_done(__func__, data, MDM_RESET_TIMEOUT_SEC, 2U);
+	rv = wait_script_done(__func__, data, MDM_RESET_TIMEOUT_SEC, 1U);
 	if (rv < 0) {
 		LOG_ERR("Reset operation timed out");
 		rv = -ETIMEDOUT;
@@ -2911,6 +2944,12 @@ MODEM_CHAT_SCRIPT_CMDS_DEFINE(
 	MODEM_CHAT_SCRIPT_CMD_RESP(MDM_SETUP_CMD_PDP_CTX, ok_match),
 	MODEM_CHAT_SCRIPT_CMD_RESP("AT+CEREG=1", ok_match),
 	MODEM_CHAT_SCRIPT_CMD_RESP("AT+CPSMS=1,\"\",\"\",\"10101010\",\"00100001\"", ok_match),
+	MODEM_CHAT_SCRIPT_CMD_RESP(CONFIG_MODEM_NRF9160_MAGPIO_CMD, ok_match),
+	MODEM_CHAT_SCRIPT_CMD_RESP(CONFIG_MODEM_NRF9160_COEX0_CMD, ok_match),
+
+#if IS_ENABLED(CONFIG_MODEM_NRF9160_EXTERNAL_ALMANAC)
+	MODEM_CHAT_SCRIPT_CMD_RESP(MDM_SETUP_CMD_ALMANAC_DATA, ok_match),
+#endif
 
 	MODEM_CHAT_SCRIPT_CMD_RESP_MULT("AT+CGSN", imei_match),
 	MODEM_CHAT_SCRIPT_CMD_RESP_MULT("AT+CGMI", manufacturer_match),

@@ -19,6 +19,7 @@
 
 #include "modem_socket.h"
 
+
 #define MDM_INIT_SCRIPT_TIMEOUT_SECONDS  10
 #define MDM_DYNAMIC_SCRIPT_TIMEOUT_SEC   5
 #define MDM_RECV_DATA_SCRIPT_TIMEOUT_SEC 2
@@ -53,8 +54,14 @@
 #elif IS_ENABLED(CONFIG_MODEM_NRF9160_MODE_DUAL_LTE_PREF)
 #define MDM_SETUP_CMD_SYSTEM_MODE "AT%XSYSTEMMODE=1,1,1,1"
 #endif
+
 /* PDP context */
 #define MDM_SETUP_CMD_PDP_CTX "AT+CGDCONT=0,\"IP\",\"" CONFIG_MODEM_NRF9160_APN "\""
+
+#if IS_ENABLED(CONFIG_MODEM_NRF9160_EXTERNAL_ALMANAC)
+#define MDM_SETUP_CMD_ALMANAC_DATA                                                                 \
+	"AT%XFILEWRITE=1,\"" FACTORY_ALMANAC_DATA_V2 "\",\"" FACTORY_ALMANAC_CHECKSUM_V2 "\""
+#endif
 
 /* Default SLM data mode terminator command */
 #define MDM_DATA_MODE_TERMINATOR "!~>&}@%"
