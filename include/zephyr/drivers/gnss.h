@@ -177,6 +177,38 @@ struct gnss_time {
 	uint8_t century_year;
 };
 
+/** GNSS extended data structure */
+struct gnss_extended {
+	/** Horizontal dilution of precision in 1/1000 */
+	uint16_t hdop;
+	/** Vertical dilution of precision in 1/1000 */
+	uint16_t vdop;
+	/** Time dilution of precision in 1/1000 */
+	uint16_t tdop;
+	/** Position dilution of precision in 1/1000 */
+	uint16_t pdop;
+	/** 2D position accuracy (1-sigma) in 1/1000 meters */
+	uint32_t accuracy;
+	/** Altitude accuracy (1-sigma) in 1/1000 meters */
+	uint32_t altitude_accuracy;
+	/** Horizontal speed accuracy (1-sigma) in 1/1000 m/s */
+	uint32_t speed_accuracy;
+	/** Vertical speed in 1/1000 m/s, positive is up, negative is down*/
+	int32_t vertical_speed;
+	/** Vertical speed accuracy (1-sigma) in 1/1000 m/s */
+	uint32_t vertical_speed_accuracy;
+	/** Heading accuracy (1-sigma) in 1/1000 degrees */
+	uint32_t heading_accuracy;
+	/** PVT notification flags, see NRF_MODEM_GNSS_PVT_FLAG_* */
+	uint32_t flags;
+	/** Total number of satellites tracked */
+	uint32_t sat_cnt;
+	/** Number of satellites used in the position solution */
+	uint32_t sat_used;
+	/** Number of satellites marked as unhealthy */
+	uint32_t sat_unhealthy;
+};
+
 /** GNSS API structure */
 __subsystem struct gnss_driver_api {
 	gnss_set_fix_rate_t set_fix_rate;
@@ -198,6 +230,8 @@ struct gnss_data {
 	struct gnss_info info;
 	/** UTC time when data was acquired */
 	struct gnss_time utc;
+	/** Extended gnss data **/
+	struct gnss_extended gnss_ext;
 };
 
 /** Template for GNSS data callback */
