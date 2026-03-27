@@ -230,9 +230,8 @@ struct gnss_data {
 	struct gnss_info info;
 	/** UTC time when data was acquired */
 	struct gnss_time utc;
-	/** Sendrato extended gnss data **/
+	/** Extended gnss data **/
 	struct gnss_extended gnss_ext;
-
 };
 
 /** Template for GNSS data callback */
